@@ -6,7 +6,11 @@
 
 using AngleSharp;
 using AngleSharp.Dom;
+using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 var forbiddenGenres = new HashSet<string>(StringComparer.OrdinalIgnoreCase) 
@@ -14,13 +18,55 @@ var forbiddenGenres = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
     "Yaoi",
     "Futanari",
     "Gore"
+};
+
+async Task<string> GetHtml(string siteUrl)
+{
+    var client = new HttpClient();
+    var flareSolverrUrl = "http://localhost:8191/v1";
+
+    var payload = new
+    {
+        cmd = "request.get",
+        url = siteUrl,
+        maxTimeout = 60000
+    };
+
+    var json = JsonSerializer.Serialize(payload);
+    using var content = new StringContent(json, Encoding.UTF8, "application/json");
+
+    try
+    {
+        var response = await client.PostAsync(flareSolverrUrl, content);
+        var responseBody = await response.Content.ReadAsStringAsync();
+
+        using var doc = JsonDocument.Parse(responseBody);
+        var root = doc.RootElement;
+
+        string status = root.TryGetProperty("status", out var s) ? s.ToString() : "";
+        string message = root.TryGetProperty("message", out var m) ? m.ToString() : "";
+        string solutionResponse = "";
+
+        if (root.TryGetProperty("solution", out var sol) &&
+            sol.TryGetProperty("response", out var resp))
+        {
+            solutionResponse = resp.GetString() ?? resp.ToString();
+        }
+        
+        return solutionResponse;
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine("Error Getting FlareSolverr Solution: " + ex.Message);
+    }
+    return string.Empty;
 }
 
-async Task<(string? Key, IEnumerable<string?> Values)> GetContentByCssSelectorAsync(string url, string nameSelector, string genresSelector) 
+async Task<(string? Key, IEnumerable<string?> Values)> GetContentByCssSelectorAsync(string html, string nameSelector, string genresSelector) 
 {
     var config = Configuration.Default.WithDefaultLoader();
     var context = BrowsingContext.New(config);
-    var document = await context.OpenAsync(url);
+    var document = await context.OpenAsync(req => req.Content(@html));
     var name = document.QuerySelector(nameSelector);
     var genres = document.QuerySelectorAll(genresSelector);
     var keyName = name!.GetAttribute("content");
@@ -43,7 +89,7 @@ while(true)
         for(int i = 0; i < n; i++)
         {
             // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
-            tasks[i] = GetContentByCssSelectorAsync("https://muchohentai.com/random-video/", "meta[property=\"article:section\"]", "meta[property=\"article:tag\"]");
+            tasks[i] = GetContentByCssSelectorAsync(await GetHtml("https://muchohentai.com/random-video/"), "meta[property=\"article:section\"]", "meta[property=\"article:tag\"]");
         }
         contents = await Task.WhenAll(tasks);
     }
