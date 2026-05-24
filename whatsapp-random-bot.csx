@@ -1,6 +1,7 @@
 #!/usr/bin/env dotnet-script
                                         
 #r "nuget: AngleSharp, 1.4.0"
+#r "nuget: dotenv.net, 4.0.1"
 
 #nullable enable
 
@@ -12,6 +13,12 @@ using System.Net.Http.Headers;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using dotenv.net;
+
+DotEnv.Load();
+var forbidden = Environment.GetEnvironmentVariable("FORBIDDEN_GENRES") ?? throw new ArgumentNullException("FORBIDDEN_GENRES not in .env");
+string flareSolverrUrl = Environment.GetEnvironmentVariable("FLARESOLVERR_URL") ?? throw new ArgumentNullException("FLARESOLVERR_URL not in .env");
+string siteUrl = Environment.GetEnvironmentVariable("SITE_URL") ?? throw new ArgumentNullException("SITE_URL not in .env");
 
 var forbiddenGenres = new HashSet<string>(StringComparer.OrdinalIgnoreCase) 
 {
@@ -23,7 +30,6 @@ var forbiddenGenres = new HashSet<string>(StringComparer.OrdinalIgnoreCase)
 async Task<string> GetHtml(string siteUrl)
 {
     var client = new HttpClient();
-    var flareSolverrUrl = "http://localhost:8191/v1";
 
     var payload = new
     {
@@ -89,7 +95,7 @@ while(true)
         for(int i = 0; i < n; i++)
         {
             // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
-            tasks[i] = GetContentByCssSelectorAsync(await GetHtml("https://muchohentai.com/random-video/"), "meta[property=\"article:section\"]", "meta[property=\"article:tag\"]");
+            tasks[i] = GetContentByCssSelectorAsync(await GetHtml(siteUrl), "meta[property=\"article:section\"]", "meta[property=\"article:tag\"]");
         }
         contents = await Task.WhenAll(tasks);
     }
