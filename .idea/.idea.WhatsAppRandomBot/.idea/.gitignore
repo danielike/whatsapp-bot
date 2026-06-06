@@ -2,10 +2,10 @@
 /shelf/
 /workspace.xml
 # Rider ignored files
-/modules.xml
-/contentModel.xml
 /projectSettingsUpdater.xml
-/.idea.whatsapp-random-bot.iml
+/contentModel.xml
+/.idea.WhatsAppRandomBot.iml
+/modules.xml
 # Editor-based HTTP Client requests
 /httpRequests/
 # Ignored default folder with query files
