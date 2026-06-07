@@ -1,26 +1,27 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
-using System.Threading;
-using System.Threading.Tasks;
-using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+// using System;
+// using System.Collections.Generic;
+// using System.Linq;
+// using System.Net.Http;
+// using System.Text;
+// using System.Threading;
+// using System.Threading.Tasks;
+// using Microsoft.Extensions.Hosting;
+// using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using WhatsappBot.ExternalApis;
 using WhatsappBot.Options;
 
 namespace WhatsappBot;
 
-public class GenerateRandomContent(ILogger<GenerateRandomContent> logger, IOptionsMonitor<ConfigurationOptions> configuration) : BackgroundService
+public class GenerateRandomContent(
+    ILogger<GenerateRandomContent> logger, 
+    IOptionsMonitor<ConfigurationOptions> configuration
+    ) : BackgroundService
 {
-    private readonly ILogger<GenerateRandomContent> _logger = logger;
-    private readonly IOptionsMonitor<ConfigurationOptions> _configuration = configuration;
-
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
     {
         var forbiddenGenres = new HashSet<string>( 
-            _configuration.CurrentValue.ForbiddenGenres
+            configuration.CurrentValue.ForbiddenGenres
                 .Split(',')
                 .Select(s => s.Trim())
                 .Where(s => !string.IsNullOrWhiteSpace(s))
@@ -41,7 +42,7 @@ public class GenerateRandomContent(ILogger<GenerateRandomContent> logger, IOptio
         var client = new HttpClient(handler);
         while (!stoppingToken.IsCancellationRequested)
         {
-            // _logger.LogInformation("Background job running at: {time}", DateTimeOffset.Now);
+            logger.LogBackgroundJobRunningAt(DateTimeOffset.Now);
             
             // TODO: Listen whatsapp messages using Evolution API
             // TODO: If message is: /random n @mention, start to process. If not, ignore it.
@@ -56,7 +57,7 @@ public class GenerateRandomContent(ILogger<GenerateRandomContent> logger, IOptio
                 for(int i = 0; i < n; i++)
                 {
                     // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
-                    tasks[i] = DomManipulator.GetContentByCssSelectorAsync(await FlaresolverrApi.GetHtml(client, _configuration.CurrentValue.FlaresolverrUrl, _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector, _configuration.CurrentValue.GenresSelector);
+                    tasks[i] = DomManipulator.GetContentByCssSelectorAsync(await FlaresolverrApi.GetHtml(client, configuration.CurrentValue.FlaresolverrUrl, configuration.CurrentValue.SiteUrl), configuration.CurrentValue.NameSelector, configuration.CurrentValue.GenresSelector);
                 }
                 contents = await Task.WhenAll(tasks);
             }
