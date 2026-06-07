@@ -1,0 +1,73 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Net.Http;
+using System.Threading;
+using System.Threading.Tasks;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using WhatsappBot.ExternalApis;
+using WhatsappBot.Options;
+
+namespace WhatsappBot;
+
+public class GenerateRandomContent(ILogger<GenerateRandomContent> logger, IOptionsMonitor<ConfigurationOptions> configuration) : BackgroundService
+{
+    private readonly ILogger<GenerateRandomContent> _logger = logger;
+    private readonly IOptionsMonitor<ConfigurationOptions> _configuration = configuration;
+
+    protected override async Task ExecuteAsync(CancellationToken stoppingToken)
+    {
+        var forbiddenGenres = new HashSet<string>( 
+            _configuration.CurrentValue.ForbiddenGenres
+                .Split(',')
+                .Select(s => s.Trim())
+                .Where(s => !string.IsNullOrWhiteSpace(s))
+        );
+        /*
+        "Element1",
+        "Element2",
+        "Element3",
+        ...
+        */
+
+        // TODO: Refactor: inject into constructor
+        var handler = new SocketsHttpHandler
+        {
+            PooledConnectionLifetime = TimeSpan.FromMinutes(15) // Recreate every 15 minutes
+        };
+
+        var client = new HttpClient(handler);
+        while (!stoppingToken.IsCancellationRequested)
+        {
+            // _logger.LogInformation("Background job running at: {time}", DateTimeOffset.Now);
+            
+            // TODO: Listen whatsapp messages using Evolution API
+            // TODO: If message is: /random n @mention, start to process. If not, ignore it.
+            string? text = null;
+    
+            // TODO:  Change by n size based on: /random n @mention
+            int n = 5;
+            var contents = new (string? Key, IEnumerable<string?> Values)[n];
+            var tasks = new Task<(string? Key, IEnumerable<string?> Values)>[n];
+            try
+            {
+                for(int i = 0; i < n; i++)
+                {
+                    // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
+                    tasks[i] = DomManipulator.GetContentByCssSelectorAsync(await FlaresolverrApi.GetHtml(client, _configuration.CurrentValue.FlaresolverrUrl, _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector, _configuration.CurrentValue.GenresSelector);
+                }
+                contents = await Task.WhenAll(tasks);
+            }
+            catch(Exception e)
+            {
+                Console.WriteLine($"ERROR - Getting selector. Ex: {e}");
+                continue;
+            }
+            Console.Write($"{string.Join(",", contents.Select(m => m.Key))} => ");
+            Console.WriteLine($"{ string.Join(",\n", contents.SelectMany(genres => genres.Values ?? Enumerable.Empty<string?>()).Select(genre => genre ?? string.Empty ) ) }");
+            await Task.Delay(5000, stoppingToken); // Wait for 5 seconds
+        }
+    }
+}

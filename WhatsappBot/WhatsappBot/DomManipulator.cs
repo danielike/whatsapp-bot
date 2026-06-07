@@ -1,4 +1,4 @@
-namespace WhatsAppRandomBot;
+namespace WhatsappBot;
 
 using AngleSharp;
 

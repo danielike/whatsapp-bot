@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace WhatsAppRandomBot;
+namespace WhatsappBot;
 
 public record CommandResult(string Command, List<string> Args);
 
@@ -20,19 +20,19 @@ public static partial class CommandParser
         if (string.IsNullOrWhiteSpace(text)) return null;
         text = text.Trim();
 
-        var m = CommandMatch(text);
-        if (!m.Success) return null;
+        var commandMatch = CommandMatch(text);
+        if (!commandMatch.Success) return null;
 
-        var command = m.Groups[1].Value;
-        var rest = m.Groups[2].Value;
+        var command = commandMatch.Groups[1].Value;
+        var rest = commandMatch.Groups[2].Value;
 
         // split rest into args, supporting double-quoted and single-quoted segments
         var args = new List<string>();
-        foreach (Match mm in ArgumentsMatches(rest))
+        foreach (Match argumentsMatch in ArgumentsMatches(rest))
         {
-            var val = mm.Groups[1].Success ? mm.Groups[1].Value
-                : mm.Groups[2].Success ? mm.Groups[2].Value
-                : mm.Groups[3].Value;
+            var val = argumentsMatch.Groups[1].Success ? argumentsMatch.Groups[1].Value
+                : argumentsMatch.Groups[2].Success ? argumentsMatch.Groups[2].Value
+                : argumentsMatch.Groups[3].Value;
             args.Add(val);
         }
 

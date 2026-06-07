@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path="compose.yaml" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/WhatsappBotTests/WhatsappBotTests.csproj" />
+  </Folder>
+  <Project Path="WhatsappBot/WhatsappBot.csproj" />
+</Solution>

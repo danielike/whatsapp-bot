@@ -1,4 +1,4 @@
-namespace WhatsAppRandomBot.ExternalApis;
+namespace WhatsappBot.ExternalApis;
 
 using System.Text;
 using System.Text.Json;

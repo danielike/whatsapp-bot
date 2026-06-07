@@ -1,0 +1,7 @@
+﻿services:
+  whatsappbot:
+    image: whatsappbot
+    build:
+      context: .
+      dockerfile: WhatsappBot/Dockerfile
+
