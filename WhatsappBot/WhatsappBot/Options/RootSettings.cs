@@ -20,10 +20,10 @@ public class LogLevel
 
 public class ConfigurationOptions
 {
-    public string ForbiddenGenres { get; set; }
-    public string FlaresolverrUrl { get; set; }
-    public string SiteUrl { get; set; }
-    public string NameSelector { get; set; }
-    public string GenresSelector { get; set; }
+    public required string ForbiddenGenres { get; set; }
+    public required string FlaresolverrUrl { get; set; }
+    public required string SiteUrl { get; set; }
+    public required string NameSelector { get; set; }
+    public required string GenresSelector { get; set; }
 }
 

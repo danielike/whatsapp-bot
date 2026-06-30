@@ -1,13 +1,14 @@
-namespace WhatsappBot.ExternalApis;
+namespace WhatsappBot.ExternalApis.Flaresolverr;
 
 using System.Text;
 using System.Text.Json;
+using System.Net.Mime;
 
 public static class FlaresolverrApi
 {
     public static async Task<string> GetHtml(HttpClient client, string flareSolverrUrl, string siteUrl)
     {
-        var payload = new
+        var payload = new FlaresolverrRequest
         {
             cmd = "request.get",
             url = siteUrl,
@@ -15,7 +16,7 @@ public static class FlaresolverrApi
         };
 
         var json = JsonSerializer.Serialize(payload);
-        using var content = new StringContent(json, Encoding.UTF8, "application/json");
+        using var content = new StringContent(json, Encoding.UTF8, MediaTypeNames.Application.Json);
 
         try
         {

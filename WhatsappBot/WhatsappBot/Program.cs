@@ -6,7 +6,8 @@ var builder = WebApplication.CreateBuilder(args);
 builder
     .Services
     .Configure<ConfigurationOptions>(builder.Configuration.GetSection(nameof(ConfigurationOptions)))
-    .AddHostedService<GenerateRandomContent>();
+    .AddHostedService<GenerateRandomContent>()
+    .AddMvc();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -42,10 +43,7 @@ app.MapGet("/weatherforecast", () =>
     .WithName("GetWeatherForecast");
 
 //TODO: Implement evolution api webhook to listen whatsapp messages
-app.MapPost("/instance", () =>
-{
-    
-});
+app.MapControllers();
 
 app.Run();
 
