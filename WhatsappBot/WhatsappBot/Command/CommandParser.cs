@@ -1,6 +1,6 @@
 using System.Text.RegularExpressions;
 
-namespace WhatsappBot;
+namespace WhatsappBot.Command;
 
 public record CommandResult(string Command, List<string> Args);
 

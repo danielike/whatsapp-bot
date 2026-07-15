@@ -1,4 +1,5 @@
 ﻿using WhatsappBot;
+using WhatsappBot.Command;
 
 namespace WhatsappBotTests;
 
