@@ -31,5 +31,8 @@ public class ConfigurationOptions
     public string EvolutionApiEndpoint { get; set; } = string.Empty;
     public string EvolutionApiInstance { get; set; } = string.Empty;
     public string EvolutionApiKey { get; set; } = string.Empty;
+    public string EvolutionApiTranscriberUrl { get; set; } = string.Empty;
+    public string EvolutionApiTranscriberEndpoint { get; set; } = string.Empty;
+    public string EvolutionApiTranscriberKey { get; set; } = string.Empty;
 }
 
