@@ -1,4 +1,5 @@
 using Microsoft.Extensions.Options;
+using WhatsappBot.DomManipulator;
 using WhatsappBot.ExternalApis.Flaresolverr;
 using WhatsappBot.Options;
 
@@ -6,7 +7,8 @@ namespace WhatsappBot;
 
 public class GenerateRandomContent(
     ILogger<GenerateRandomContent> logger, 
-    IOptionsMonitor<ConfigurationOptions> configuration
+    IOptionsMonitor<ConfigurationOptions> configuration,
+    IDomManipulator domManipulator
     ) : BackgroundService
 {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken)
@@ -48,7 +50,7 @@ public class GenerateRandomContent(
                 for(int i = 0; i < n; i++)
                 {
                     // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
-                    tasks[i] = DomManipulator.GetContentByCssSelectorAsync(await FlaresolverrApi.GetHtml(client, configuration.CurrentValue.FlaresolverrUrl, configuration.CurrentValue.SiteUrl), configuration.CurrentValue.NameSelector, configuration.CurrentValue.GenresSelector);
+                    tasks[i] = domManipulator.GetContentByCssSelectorAsync(await FlaresolverrApi.GetHtml(client, configuration.CurrentValue.FlaresolverrUrl, configuration.CurrentValue.SiteUrl), configuration.CurrentValue.NameSelector, configuration.CurrentValue.GenresSelector);
                 }
                 contents = await Task.WhenAll(tasks);
             }
