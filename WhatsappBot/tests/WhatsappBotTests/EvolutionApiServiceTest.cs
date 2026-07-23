@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.Mime;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq.Protected;
 using WhatsappBot.ExternalApis.Evolution;
@@ -15,7 +16,8 @@ public class EvolutionApiServiceTest
     private readonly Mock<IHttpClientFactory> _httpClientFactoryMock = new();
     private readonly Mock<IOptionsMonitor<ConfigurationOptions>>  _optionsMonitorMock = new();
     private readonly Mock<IEvolutionDelayCalculator> _evolutionDelayCalculatorMock = new();
-    private readonly Mock<HttpMessageHandler> _mockHandler = new Mock<HttpMessageHandler>(MockBehavior.Strict);
+    private readonly Mock<HttpMessageHandler> _mockHandler = new(MockBehavior.Strict);
+    private readonly ILogger<EvolutionApiService> _logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<EvolutionApiService>.Instance;
     
     [Fact]
     public async Task ShouldSendMessage()
@@ -59,7 +61,7 @@ public class EvolutionApiServiceTest
             .Setup(calculator => calculator.GetHumanDelay(It.IsAny<string>(), It.IsAny<int>()))
             .Returns(450);
         
-        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object);
+        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger);
         
         var response = await evolutionApiService.SendMessage("test");
         
@@ -109,7 +111,7 @@ public class EvolutionApiServiceTest
             .Setup(calculator => calculator.GetHumanDelay(It.IsAny<string>(), It.IsAny<int>()))
             .Returns(450);
         
-        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object);
+        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger);
         
         var response = await evolutionApiService.TranscribeAudio("audio_tests/audio_test.wav", "es");
         

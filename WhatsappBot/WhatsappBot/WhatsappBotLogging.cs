@@ -1,3 +1,5 @@
+using System.Net;
+
 namespace WhatsappBot;
 
 public static partial class WhatsappBotLogging
@@ -7,4 +9,7 @@ public static partial class WhatsappBotLogging
     
     [LoggerMessage(EventId = 1, Level = LogLevel.Error, Message = "Body was not valid JSON.")]
     public static partial void NotValidJson(this ILogger logger, Exception ex);
+    
+    [LoggerMessage(EventId = 2, Level = LogLevel.Error, Message = "EvolutionApi - Error sending message: {statusCode}.")]
+    public static partial void ErrorSendingMessageEvolution(this ILogger logger, HttpStatusCode statusCode);
 }

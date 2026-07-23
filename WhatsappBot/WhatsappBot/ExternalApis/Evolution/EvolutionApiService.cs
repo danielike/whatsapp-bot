@@ -9,12 +9,14 @@ public class EvolutionApiService : IEvolutionApiService
     private readonly HttpClient _httpClient;
     private readonly IEvolutionDelayCalculator _evolutionDelayCalculator;
     private readonly IOptionsMonitor<ConfigurationOptions> _options;
+    private readonly ILogger<EvolutionApiService> _logger;
     
-    public EvolutionApiService(IHttpClientFactory httpClientFactory, IEvolutionDelayCalculator evolutionDelayCalculator, IOptionsMonitor<ConfigurationOptions> options)
+    public EvolutionApiService(IHttpClientFactory httpClientFactory, IEvolutionDelayCalculator evolutionDelayCalculator, IOptionsMonitor<ConfigurationOptions> options, ILogger<EvolutionApiService> logger)
     {
         _httpClient = httpClientFactory.CreateClient(nameof(EvolutionApiService));
         _evolutionDelayCalculator = evolutionDelayCalculator;
         _options = options ?? throw new ArgumentNullException(nameof(options));
+        _logger = logger;
     }
     
     public async Task<HttpResponseMessage> SendMessage(string message)
@@ -31,6 +33,7 @@ public class EvolutionApiService : IEvolutionApiService
         var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
         if (!response.IsSuccessStatusCode)
         {
+            _logger.ErrorSendingMessageEvolution(response.StatusCode);
             Console.WriteLine($"Error sending message: {response.StatusCode}");
         }
 
