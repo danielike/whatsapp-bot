@@ -1,4 +1,5 @@
 using System.Text.Json;
+using Serilog;
 using WhatsappBot;
 using WhatsappBot.Command;
 using WhatsappBot.DomManipulator;
@@ -6,6 +7,7 @@ using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.Options;
 
 var builder = WebApplication.CreateBuilder(args);
+builder.Host.UseSerilog((context, _, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
 
 builder
     .Services
