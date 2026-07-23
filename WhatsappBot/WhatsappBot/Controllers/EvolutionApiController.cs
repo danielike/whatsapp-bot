@@ -1,21 +1,25 @@
+using System.Net;
 using System.Text.Json;
+using WhatsappBot.Command;
+using Microsoft.AspNetCore.Mvc;
 
 namespace WhatsappBot.Controllers;
-
-using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]
 public class EvolutionApiController : ControllerBase
 {
-    // GET
-    public IActionResult Index()
+    private readonly ILogger<EvolutionApiController> _logger;
+    private readonly ICommandService _commandService;
+
+    public EvolutionApiController(ILogger<EvolutionApiController> logger, ICommandService commandService)
     {
-        return Ok();
+        _logger = logger;
+        _commandService = commandService;
     }
-    
-    [HttpPost("sendMessage")]
-    public IActionResult GetSendMessageEvent([FromBody] object payload)
+
+    [HttpPost("messages")]
+    public async Task<IActionResult> GetSendMessageEvent([FromBody] object payload)
     {
         try
         {
@@ -28,16 +32,16 @@ public class EvolutionApiController : ControllerBase
 
                 if (command is not null)
                 {
-                    // Example: /CommandName 1 @username
-                    CommandParser.TryGetIntArg(command, 0, out int amount);
-                    CommandParser.TryGetMention(command, 1, out string mention);
+                    await _commandService.TriggerCommandFunction(command);
                 }
             }
         }
-        catch
+        catch (Exception e)
         {
-            Console.WriteLine("Body was not valid JSON.");
+            _logger.NotValidJson(e);
+            return StatusCode((int)HttpStatusCode.InternalServerError);
         }
+
         return Ok();
     }
 }

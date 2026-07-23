@@ -7,11 +7,13 @@ namespace WhatsappBot.ExternalApis.Evolution;
 public class EvolutionApiService : IEvolutionApiService
 {
     private readonly HttpClient _httpClient;
+    private readonly IEvolutionDelayCalculator _evolutionDelayCalculator;
     private readonly IOptionsMonitor<ConfigurationOptions> _options;
     
-    public EvolutionApiService(IHttpClientFactory httpClientFactory, IOptionsMonitor<ConfigurationOptions> options)
+    public EvolutionApiService(IHttpClientFactory httpClientFactory, IEvolutionDelayCalculator evolutionDelayCalculator, IOptionsMonitor<ConfigurationOptions> options)
     {
         _httpClient = httpClientFactory.CreateClient(nameof(EvolutionApiService));
+        _evolutionDelayCalculator = evolutionDelayCalculator;
         _options = options ?? throw new ArgumentNullException(nameof(options));
     }
     
@@ -23,10 +25,10 @@ public class EvolutionApiService : IEvolutionApiService
         var request = new
         {
             text = message,
-            delay = EvolutionDelayCalculator.GetHumanDelay(message)
+            delay = _evolutionDelayCalculator.GetHumanDelay(message)
         };
         
-        var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", JsonSerializer.Serialize(request));
+        var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
         if (!response.IsSuccessStatusCode)
         {
             Console.WriteLine($"Error sending message: {response.StatusCode}");

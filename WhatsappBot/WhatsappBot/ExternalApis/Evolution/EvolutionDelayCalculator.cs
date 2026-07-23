@@ -2,7 +2,7 @@ namespace WhatsappBot.ExternalApis.Evolution;
 
 using System;
 
-public static class EvolutionDelayCalculator
+public class EvolutionDelayCalculator : IEvolutionDelayCalculator
 {
     private static readonly Random _random = new Random();
     public const int DefaultSafeDelay = 1200;
@@ -14,7 +14,7 @@ public static class EvolutionDelayCalculator
     /// <param name="message">The message text.</param>
     /// <param name="wpm">Typing speed (40-55 recommended).</param>
     /// <returns>Integer delay in milliseconds.</returns>
-    public static int GetHumanDelay(string message, int wpm = 50)
+    public int GetHumanDelay(string message, int wpm = 50)
     {
         if (string.IsNullOrEmpty(message)) return DefaultSafeDelay; // Default safe delay
 

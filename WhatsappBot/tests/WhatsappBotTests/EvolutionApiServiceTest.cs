@@ -111,7 +111,7 @@ public class EvolutionApiServiceTest
         
         var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object);
         
-        var response = await evolutionApiService.SendMessage("test");
+        var response = await evolutionApiService.TranscribeAudio("audio_tests/audio_test.wav", "es");
         
         Assert.True(response.IsSuccessStatusCode);
         Assert.NotNull(response.Content);

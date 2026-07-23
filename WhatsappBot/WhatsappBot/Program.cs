@@ -1,4 +1,7 @@
+using System.Text.Json;
 using WhatsappBot;
+using WhatsappBot.Command;
+using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.Options;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -7,7 +10,24 @@ builder
     .Services
     .Configure<ConfigurationOptions>(builder.Configuration.GetSection(nameof(ConfigurationOptions)))
     .AddHostedService<GenerateRandomContent>()
-    .AddMvc();
+    .AddMvc()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+    });;
+
+builder.Services.AddHttpClient(
+    nameof(EvolutionApiService),
+    client =>
+    {
+        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:EvolutionApiKey"]}");
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.DefaultRequestHeaders.Add("apikey", $"{builder.Configuration["ConfigurationOptions:EvolutionApiKey"]}");
+    });
+ 
+builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();
+builder.Services.AddScoped<IEvolutionApiService, EvolutionApiService>();
+builder.Services.AddScoped<ICommandService, CommandService>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
@@ -41,8 +61,7 @@ app.MapGet("/weatherforecast", () =>
         return forecast;
     })
     .WithName("GetWeatherForecast");
-
-//TODO: Implement evolution api webhook to listen whatsapp messages
+ 
 app.MapControllers();
 
 app.Run();
