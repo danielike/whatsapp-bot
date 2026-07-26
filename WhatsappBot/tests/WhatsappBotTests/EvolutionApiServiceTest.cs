@@ -4,6 +4,7 @@ using System.Net.Mime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq.Protected;
+using WhatsappBot;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
@@ -17,7 +18,7 @@ public class EvolutionApiServiceTest
     private readonly Mock<IOptionsMonitor<ConfigurationOptions>>  _optionsMonitorMock = new();
     private readonly Mock<IEvolutionDelayCalculator> _evolutionDelayCalculatorMock = new();
     private readonly Mock<HttpMessageHandler> _mockHandler = new(MockBehavior.Strict);
-    private readonly ILogger<EvolutionApiService> _logger = Microsoft.Extensions.Logging.Abstractions.NullLogger<EvolutionApiService>.Instance;
+    private readonly Mock<ILogger<EvolutionApiService>> _logger = new();
     
     [Fact]
     public async Task ShouldSendMessage()
@@ -61,7 +62,7 @@ public class EvolutionApiServiceTest
             .Setup(calculator => calculator.GetHumanDelay(It.IsAny<string>(), It.IsAny<int>()))
             .Returns(450);
         
-        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger);
+        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger.Object);
         
         var response = await evolutionApiService.SendMessage("test");
         
@@ -77,7 +78,7 @@ public class EvolutionApiServiceTest
             {
                 EvolutionApiTranscriberUrl = "http://localhost:4040",
                 EvolutionApiTranscriberEndpoint = "/transcribe",
-                EvolutionApiTranscriberKey = "key"
+                EvolutionApiTranscriberKey = "429683C4C977415CAAFCCE10F7D57E11"
             });
 
         var expectedResponse = new EvolutionApiTranscriberResponse { Transcription = "tanto." };
@@ -111,12 +112,59 @@ public class EvolutionApiServiceTest
             .Setup(calculator => calculator.GetHumanDelay(It.IsAny<string>(), It.IsAny<int>()))
             .Returns(450);
         
-        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger);
+        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger.Object);
         
-        var response = await evolutionApiService.TranscribeAudio("audio_tests/audio_test.wav", "es");
+        var response = await evolutionApiService.TranscribeAudio(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads/audio_tests/tonto_insulto.ogg"), "es");
         
-        Assert.True(response.IsSuccessStatusCode);
-        Assert.NotNull(response.Content);
-        Assert.Contains(expectedResponse.Transcription, (await response.Content.ReadFromJsonAsync<EvolutionApiTranscriberResponse>())!.Transcription);
+        Assert.Contains(expectedResponse.Transcription, response.Transcription);
+    }
+    
+        [Fact]
+    public async Task ShouldLogErrorByBadTranscription()
+    {
+        _optionsMonitorMock
+            .Setup(property => property.CurrentValue)
+            .Returns(new ConfigurationOptions
+            {
+                EvolutionApiTranscriberUrl = "http://localhost:4040",
+                EvolutionApiTranscriberEndpoint = "/transcribe",
+                EvolutionApiTranscriberKey = "429683C4C977415CAAFCCE10F7D57E11"
+            });
+
+        var expectedResponse = new EvolutionApiTranscriberResponse { Transcription = string.Empty };
+
+        var mockResponse = new HttpResponseMessage
+        {
+            StatusCode = HttpStatusCode.BadRequest
+        };
+        
+        _mockHandler
+            .Protected()
+            .Setup<Task<HttpResponseMessage>>(
+                nameof(HttpClient.SendAsync),
+                ItExpr.Is<HttpRequestMessage>(m => m.Method == HttpMethod.Post),
+                ItExpr.IsAny<CancellationToken>())
+            .ReturnsAsync(mockResponse);
+
+        _httpClientFactoryMock
+            .Setup(factory => factory.CreateClient(It.IsAny<string>()))
+            .Returns(() =>
+            {
+                var httpClient = new HttpClient(_mockHandler.Object);
+                httpClient.BaseAddress = new Uri(_optionsMonitorMock.Object.CurrentValue.EvolutionApiTranscriberUrl);
+                httpClient.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
+                httpClient.DefaultRequestHeaders.Add("apikey", $"{_optionsMonitorMock.Object.CurrentValue.EvolutionApiTranscriberKey}");
+                return httpClient;
+            });
+        
+        _evolutionDelayCalculatorMock
+            .Setup(calculator => calculator.GetHumanDelay(It.IsAny<string>(), It.IsAny<int>()))
+            .Returns(450);
+        
+        var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger.Object);
+        
+        var response = await evolutionApiService.TranscribeAudio(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads/audio_tests/tonto_insulto.ogg"), "es");
+        
+        Assert.Equal(expectedResponse.Transcription, response.Transcription);
     }
 }

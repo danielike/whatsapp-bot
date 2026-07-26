@@ -31,7 +31,7 @@ builder.Services.AddHttpClient(
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();
 builder.Services.AddScoped<IEvolutionApiService, EvolutionApiService>();
 builder.Services.AddScoped<ICommandService, CommandService>();
-builder.Services.AddScoped<IDomManipulator, DomManipulator>();
+builder.Services.AddSingleton<IDomManipulator, DomManipulator>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

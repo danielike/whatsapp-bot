@@ -12,4 +12,7 @@ public static partial class WhatsappBotLogging
     
     [LoggerMessage(EventId = 2, Level = LogLevel.Error, Message = "EvolutionApi - Error sending message: {statusCode}.")]
     public static partial void ErrorSendingMessageEvolution(this ILogger logger, HttpStatusCode statusCode);
+    
+    [LoggerMessage(EventId = 3, Level = LogLevel.Error, Message = "Error transcribing audio: {statusCode}.")]
+    public static partial void ErrorTranscribingAudio(this ILogger logger, HttpStatusCode statusCode);
 }

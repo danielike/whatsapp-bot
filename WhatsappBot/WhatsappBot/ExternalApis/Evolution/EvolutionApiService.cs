@@ -1,5 +1,9 @@
+using System.Net.Http.Headers;
+using System.Net.Mime;
 using System.Text.Json;
+using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
 
 namespace WhatsappBot.ExternalApis.Evolution;
@@ -31,17 +35,31 @@ public class EvolutionApiService : IEvolutionApiService
         };
         
         var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
+        
         if (!response.IsSuccessStatusCode)
         {
             _logger.ErrorSendingMessageEvolution(response.StatusCode);
-            Console.WriteLine($"Error sending message: {response.StatusCode}");
         }
-
+        
         return response;
     }
 
-    public Task<HttpResponseMessage> TranscribeAudio(string audioPath, string language)
+    public async Task<EvolutionApiTranscriberResponse> TranscribeAudio(string audioPath, string language)
     {
-        throw new NotImplementedException();
+        var form = new MultipartFormDataContent();
+        form.Add(new StringContent(language), "language");
+        var fileStream = File.OpenRead(audioPath);
+        var streamContent = new StreamContent(fileStream);
+        streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("audio/ogg");
+        form.Add(streamContent, "file", Path.GetFileName(audioPath));
+        
+        var response = await _httpClient.PostAsync($"{_options.CurrentValue.EvolutionApiTranscriberEndpoint}", form);
+        if (!response.IsSuccessStatusCode)
+        {
+            _logger.ErrorTranscribingAudio(response.StatusCode);
+            return new EvolutionApiTranscriberResponse();
+        }
+        
+        return await response.Content.ReadFromJsonAsync<EvolutionApiTranscriberResponse>() ?? new EvolutionApiTranscriberResponse();
     }
 }
