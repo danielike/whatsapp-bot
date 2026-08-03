@@ -2,6 +2,7 @@ using Microsoft.Extensions.Options;
 using WhatsappBot.ExternalApis;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.Options;
+using WhatsappBot.RandomContentGenerator;
 
 namespace WhatsappBot.Command;
 
@@ -9,10 +10,14 @@ public class CommandService : ICommandService
 {
     private const string Random = "random";
     private readonly IEvolutionApiService _evolutionApiService;
+    private readonly IOptionsMonitor<ConfigurationOptions> _configuration;
+    private readonly IRandomContentGenerator _randomContentGenerator;
 
-    public CommandService(IEvolutionApiService evolutionApiService)
+    public CommandService(IEvolutionApiService evolutionApiService, IOptionsMonitor<ConfigurationOptions> configuration, IRandomContentGenerator randomContentGenerator)
     {
         _evolutionApiService = evolutionApiService;
+        _configuration = configuration;
+        _randomContentGenerator = randomContentGenerator;
     }
     public async Task<HttpResponseMessage> TriggerCommandFunction(CommandResult command)
     {
@@ -24,7 +29,7 @@ public class CommandService : ICommandService
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
                     // TODO: Get based on number from website, and send message
-                    return await _evolutionApiService.SendMessage($"{mention}");;
+                    return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention));
                 }
                 break;
         }

@@ -4,9 +4,17 @@ using System.Text;
 using System.Text.Json;
 using System.Net.Mime;
 
-public static class FlaresolverrApi
+public class FlaresolverrApi : IFlaresolverrApi
 {
-    public static async Task<string> GetHtml(HttpClient client, string flareSolverrUrl, string siteUrl)
+    private readonly HttpClient _client;
+    private readonly ILogger<FlaresolverrApi> _logger;
+    public FlaresolverrApi(IHttpClientFactory httpClientFactory, ILogger<FlaresolverrApi> logger)
+    {
+        _client = httpClientFactory.CreateClient(nameof(FlaresolverrApi));
+        _logger = logger;
+    }
+    
+    public async Task<string> GetHtml(string flareSolverrUrl, string siteUrl)
     {
         var payload = new FlaresolverrRequest
         {
@@ -20,7 +28,7 @@ public static class FlaresolverrApi
 
         try
         {
-            var response = await client.PostAsync(flareSolverrUrl, content);
+            var response = await _client.PostAsync(flareSolverrUrl, content);
             var responseBody = await response.Content.ReadAsStringAsync();
 
             using var doc = JsonDocument.Parse(responseBody);
@@ -38,6 +46,7 @@ public static class FlaresolverrApi
         }
         catch (Exception ex)
         {
+            _logger.ErrorGettingFlaresolverrSolution(ex.Message);
             Console.WriteLine("Error Getting FlareSolverr Solution: " + ex.Message);
         }
         return string.Empty;

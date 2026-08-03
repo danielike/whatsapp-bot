@@ -28,7 +28,8 @@ public class ConfigurationOptions
     public string NameSelector { get; set; } = string.Empty;
     public string GenresSelector { get; set; } = string.Empty;
     public string EvolutionApiUrl { get; set; } = string.Empty;
-    public string EvolutionApiEndpoint { get; set; } = string.Empty;
+    public string EvolutionApiSendMessageEndpoint { get; set; } = string.Empty;
+    public string EvolutionApiSendMessageId { get; set; } = string.Empty;
     public string EvolutionApiInstance { get; set; } = string.Empty;
     public string EvolutionApiKey { get; set; } = string.Empty;
     public string EvolutionApiTranscriberUrl { get; set; } = string.Empty;

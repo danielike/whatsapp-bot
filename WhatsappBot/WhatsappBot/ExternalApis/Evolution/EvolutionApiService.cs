@@ -1,8 +1,6 @@
 using System.Net.Http.Headers;
-using System.Net.Mime;
-using System.Text.Json;
-using Microsoft.AspNetCore.Mvc.Formatters;
 using Microsoft.Extensions.Options;
+using WhatsappBot.ExternalApis.Evolution.Requests;
 using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
 
@@ -23,18 +21,19 @@ public class EvolutionApiService : IEvolutionApiService
         _logger = logger;
     }
     
-    public async Task<HttpResponseMessage> SendMessage(string message)
+    public async Task<HttpResponseMessage> SendMessage(string number, string message)
     {
         // ArgumentNullException.ThrowIfNull(configuration);
         // TODO: curl -X POST http://localhost:8082/message/sendText/Bot with apikey => evolutionApiKey in header
         // TODO: request => { "text" : "test", "delay": 1200, "mentioned":{"{{remoteJid}}"} }
-        var request = new
+        var request = new EvolutionApiSendMessageRequest
         {
-            text = message,
-            delay = _evolutionDelayCalculator.GetHumanDelay(message)
+            Number = number,
+            Text = message,
+            Delay = _evolutionDelayCalculator.GetHumanDelay(message)
         };
         
-        var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
+        var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiSendMessageEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
         
         if (!response.IsSuccessStatusCode)
         {

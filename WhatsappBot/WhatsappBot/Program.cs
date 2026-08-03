@@ -4,7 +4,9 @@ using WhatsappBot;
 using WhatsappBot.Command;
 using WhatsappBot.DomManipulator;
 using WhatsappBot.ExternalApis.Evolution;
+using WhatsappBot.ExternalApis.Flaresolverr;
 using WhatsappBot.Options;
+using WhatsappBot.RandomContentGenerator;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseSerilog((context, _, configuration) => configuration.ReadFrom.Configuration(context.Configuration));
@@ -12,18 +14,25 @@ builder.Host.UseSerilog((context, _, configuration) => configuration.ReadFrom.Co
 builder
     .Services
     .Configure<ConfigurationOptions>(builder.Configuration.GetSection(nameof(ConfigurationOptions)))
-    .AddHostedService<GenerateRandomContent>()
     .AddMvc()
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
-    });;
+    });
+
+builder.Services.AddHttpClient(
+    nameof(FlaresolverrApi),
+    client =>
+    {
+        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:FlaresolverrApiUrl"]}");
+        client.DefaultRequestHeaders.Add("Accept", "application/json");
+    });
 
 builder.Services.AddHttpClient(
     nameof(EvolutionApiService),
     client =>
     {
-        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:EvolutionApiKey"]}");
+        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:EvolutionApiUrl"]}");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
         client.DefaultRequestHeaders.Add("apikey", $"{builder.Configuration["ConfigurationOptions:EvolutionApiKey"]}");
     });
@@ -31,7 +40,9 @@ builder.Services.AddHttpClient(
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();
 builder.Services.AddScoped<IEvolutionApiService, EvolutionApiService>();
 builder.Services.AddScoped<ICommandService, CommandService>();
+builder.Services.AddScoped<IFlaresolverrApi, FlaresolverrApi>();
 builder.Services.AddSingleton<IDomManipulator, DomManipulator>();
+builder.Services.AddScoped<IRandomContentGenerator, RandomContentGenerator>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi

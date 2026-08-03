@@ -4,7 +4,7 @@ using System;
 
 public class EvolutionDelayCalculator : IEvolutionDelayCalculator
 {
-    private static readonly Random _random = new Random();
+    private static readonly Random _random = new();
     public const int DefaultSafeDelay = 1200;
 
     /// <summary>

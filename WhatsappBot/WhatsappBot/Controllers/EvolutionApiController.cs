@@ -26,7 +26,7 @@ public class EvolutionApiController : ControllerBase
             using var doc = JsonDocument.Parse(payload.ToString()!);
             var json = JsonSerializer.Deserialize<EvolutionPayload>(doc.RootElement.GetRawText());
 
-            if (json!.eventName == EvolutionPayload.MessagesUpsert)
+            if (json!.eventName == EvolutionPayload.MessagesUpsert && json!.data.messageType != EvolutionPayload.AudioMessage)
             {
                 var command = CommandParser.Parse(json.data.message.conversation);
 
@@ -34,6 +34,12 @@ public class EvolutionApiController : ControllerBase
                 {
                     await _commandService.TriggerCommandFunction(command);
                 }
+            }
+            // TODO: Implement audio transcription
+            if (json!.eventName == EvolutionPayload.MessagesUpsert &&
+                json!.data.messageType == EvolutionPayload.AudioMessage)
+            {
+                throw new NotImplementedException();
             }
         }
         catch (Exception e)
