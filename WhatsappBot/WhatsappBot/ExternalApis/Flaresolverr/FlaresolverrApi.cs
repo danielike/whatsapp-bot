@@ -14,7 +14,7 @@ public class FlaresolverrApi : IFlaresolverrApi
         _logger = logger;
     }
     
-    public async Task<string> GetHtml(string flareSolverrUrl, string siteUrl)
+    public async Task<string> GetHtml(string flareSolverrUrl, string siteUrl, CancellationToken token = default)
     {
         var payload = new FlaresolverrRequest
         {
@@ -28,12 +28,13 @@ public class FlaresolverrApi : IFlaresolverrApi
 
         try
         {
-            var response = await _client.PostAsync(flareSolverrUrl, content);
-            var responseBody = await response.Content.ReadAsStringAsync();
+            var response = await _client.PostAsync(flareSolverrUrl, content, token);
+            
+            var responseBody = await response.Content.ReadAsStringAsync(token);
 
             using var doc = JsonDocument.Parse(responseBody);
             var root = doc.RootElement;
-        
+            
             string solutionResponse = "";
 
             if (root.TryGetProperty("solution", out var sol) &&
@@ -41,14 +42,17 @@ public class FlaresolverrApi : IFlaresolverrApi
             {
                 solutionResponse = resp.GetString() ?? resp.ToString();
             }
-        
+    
             return solutionResponse;
+        }
+        catch (OperationCanceledException)
+        {
+            throw;
         }
         catch (Exception ex)
         {
             _logger.ErrorGettingFlaresolverrSolution(ex.Message);
-            Console.WriteLine("Error Getting FlareSolverr Solution: " + ex.Message);
+            return string.Empty;
         }
-        return string.Empty;
     }
 }

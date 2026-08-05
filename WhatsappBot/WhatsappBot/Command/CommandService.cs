@@ -28,7 +28,6 @@ public class CommandService : ICommandService
                 if (CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
-                    // TODO: Get based on number from website, and send message
                     return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention));
                 }
                 break;

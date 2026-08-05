@@ -20,11 +20,13 @@ builder
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
     });
 
+var configurationOptions = builder.Configuration.GetSection(nameof(ConfigurationOptions)).Get<ConfigurationOptions>();
+
 builder.Services.AddHttpClient(
     nameof(FlaresolverrApi),
     client =>
     {
-        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:FlaresolverrApiUrl"]}");
+        client.BaseAddress = new Uri($"{configurationOptions!.FlaresolverrUrl}");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
     });
 
@@ -32,9 +34,9 @@ builder.Services.AddHttpClient(
     nameof(EvolutionApiService),
     client =>
     {
-        client.BaseAddress = new Uri($"{builder.Configuration["ConfigurationOptions:EvolutionApiUrl"]}");
+        client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiUrl}");
         client.DefaultRequestHeaders.Add("Accept", "application/json");
-        client.DefaultRequestHeaders.Add("apikey", $"{builder.Configuration["ConfigurationOptions:EvolutionApiKey"]}");
+        client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions!.EvolutionApiKey}");
     });
  
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();
