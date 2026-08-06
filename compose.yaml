@@ -1,7 +1,0 @@
-﻿services:
-  whatsapprandombot:
-    image: whatsapprandombot
-    build:
-      context: .
-      dockerfile: WhatsAppRandomBot/Dockerfile
-
