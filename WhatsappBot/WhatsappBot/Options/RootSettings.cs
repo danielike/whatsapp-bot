@@ -32,6 +32,8 @@ public class ConfigurationOptions
     public string EvolutionApiSendMessageId { get; set; } = string.Empty;
     public string EvolutionApiInstance { get; set; } = string.Empty;
     public string EvolutionApiKey { get; set; } = string.Empty;
+    public bool GenerateRandomContentEnabled { get; set; }
+    public bool TranscribeAudioEnabled { get; set; }
     public string EvolutionApiTranscriberUrl { get; set; } = string.Empty;
     public string EvolutionApiTranscriberEndpoint { get; set; } = string.Empty;
     public string EvolutionApiTranscriberKey { get; set; } = string.Empty;

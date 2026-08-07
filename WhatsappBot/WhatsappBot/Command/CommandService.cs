@@ -25,7 +25,7 @@ public class CommandService : ICommandService
         {
             case Random:
                 // Example: /random amount @username
-                if (CommandParser.TryGetIntArg(command, 0, out int amount) &&
+                if (_configuration.CurrentValue.GenerateRandomContentEnabled && CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
                     return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention));
