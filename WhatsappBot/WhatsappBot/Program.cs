@@ -1,6 +1,6 @@
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using Serilog;
-using WhatsappBot;
 using WhatsappBot.Command;
 using WhatsappBot.DomManipulator;
 using WhatsappBot.ExternalApis.Evolution;
@@ -18,6 +18,7 @@ builder
     .AddJsonOptions(options =>
     {
         options.JsonSerializerOptions.PropertyNamingPolicy = JsonNamingPolicy.CamelCase;
+        options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
     });
 
 var configurationOptions = builder.Configuration.GetSection(nameof(ConfigurationOptions)).Get<ConfigurationOptions>();

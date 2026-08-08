@@ -1,5 +1,4 @@
 using Microsoft.Extensions.Options;
-using WhatsappBot.ExternalApis;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.Options;
 using WhatsappBot.RandomContentGenerator;
@@ -28,7 +27,7 @@ public class CommandService : ICommandService
                 if (_configuration.CurrentValue.GenerateRandomContentEnabled && CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
-                    return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention));
+                    return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention), mention);
                 }
                 break;
         }

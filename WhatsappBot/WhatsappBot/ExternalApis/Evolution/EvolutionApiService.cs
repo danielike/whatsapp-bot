@@ -21,14 +21,13 @@ public class EvolutionApiService : IEvolutionApiService
         _logger = logger;
     }
     
-    public async Task<HttpResponseMessage> SendMessage(string number, string message)
+    public async Task<HttpResponseMessage> SendMessage(string number, string message, string mention)
     {
-        // ArgumentNullException.ThrowIfNull(configuration);
-        // TODO: curl -X POST http://localhost:8082/message/sendText/Bot with apikey => evolutionApiKey in header
-        // TODO: request => { "text" : "test", "delay": 1200, "mentioned":{"{{remoteJid}}"} }
         var request = new EvolutionApiSendMessageRequest
         {
             Number = number,
+            MentionsEveryone = false,
+            Mentioned = [$"{mention.Remove(0, 1)}@lid"],
             Text = message,
             Delay = _evolutionDelayCalculator.GetHumanDelay(message)
         };

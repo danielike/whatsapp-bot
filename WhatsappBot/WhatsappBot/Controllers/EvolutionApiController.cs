@@ -45,7 +45,7 @@ public class EvolutionApiController : ControllerBase
         catch (Exception e)
         {
             _logger.NotValidJson(e);
-            return StatusCode((int)HttpStatusCode.InternalServerError);
+            // We don't return any status error to avoid retries, because it's an unexpected, unnecessary json in our logic.
         }
 
         return Ok();

@@ -4,7 +4,6 @@ using System.Net.Mime;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using Moq.Protected;
-using WhatsappBot;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
@@ -64,7 +63,7 @@ public class EvolutionApiServiceTest
         
         var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger.Object);
         
-        var response = await evolutionApiService.SendMessage("34600000000","test");
+        var response = await evolutionApiService.SendMessage("34600000000","test", "@12345678901");
         
         Assert.True(response.IsSuccessStatusCode);
     }
