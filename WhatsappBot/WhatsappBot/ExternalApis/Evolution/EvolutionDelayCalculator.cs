@@ -4,7 +4,7 @@ using System;
 
 public class EvolutionDelayCalculator : IEvolutionDelayCalculator
 {
-    private static readonly Random _random = new();
+    private static readonly Random _random = Random.Shared;
     public const int DefaultSafeDelay = 1200;
 
     /// <summary>
@@ -43,10 +43,11 @@ public class EvolutionDelayCalculator : IEvolutionDelayCalculator
 
         double finalDelay = variedTypingTime + sendLag;
 
+        int maxDelay = message.Length <= 80 ? 8000 : 32000;
         // 5. CLAMPING (Critical for Evolution API)
         // Min: 1000ms (Avoids 'instant' flag)
         // Max: 8000ms (Avoids 'timeout' or suspicious long pauses for short texts)
-        finalDelay = Math.Max(1000, Math.Min(8000, finalDelay));
+        finalDelay = Math.Max(1000, Math.Min(maxDelay, finalDelay));
 
         return (int)finalDelay;
     }

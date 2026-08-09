@@ -2,6 +2,7 @@ using System.Net;
 using System.Text.Json;
 using WhatsappBot.Command;
 using Microsoft.AspNetCore.Mvc;
+using WhatsappBot.RandomContentGenerator;
 
 namespace WhatsappBot.Controllers;
 
@@ -19,7 +20,7 @@ public class EvolutionApiController : ControllerBase
     }
 
     [HttpPost("messages")]
-    public async Task<IActionResult> GetSendMessageEvent([FromBody] object payload)
+    public IActionResult GetSendMessageEvent([FromBody] object payload)
     {
         try
         {
@@ -32,7 +33,7 @@ public class EvolutionApiController : ControllerBase
 
                 if (command is not null)
                 {
-                    await _commandService.TriggerCommandFunction(command);
+                    _commandService.TriggerCommandFunction(command);
                 }
             }
             // TODO: Implement audio transcription

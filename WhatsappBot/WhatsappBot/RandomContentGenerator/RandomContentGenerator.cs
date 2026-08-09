@@ -1,9 +1,9 @@
-using Microsoft.Extensions.Options;
-using WhatsappBot.DomManipulator;
-using WhatsappBot.ExternalApis.Flaresolverr;
-using WhatsappBot.Options;
-
 namespace WhatsappBot.RandomContentGenerator;
+
+using Microsoft.Extensions.Options;
+using DomManipulator;
+using ExternalApis.Flaresolverr;
+using Options;
 
 public class RandomContentGenerator : IRandomContentGenerator
 {
@@ -35,15 +35,12 @@ public class RandomContentGenerator : IRandomContentGenerator
         );
         
         _logger.LogGeneratorRunningAt(DateTimeOffset.Now);
-    
-        // TODO:  Change by n size based on: /random n @mention
+        
         var contents = new (string? Key, IEnumerable<string?> Values)[number];
-        var tasks = new Task<(string? Key, IEnumerable<string?> Values)>[number];
         try
         {
             for(int i = 0; i < number; i++)
             {
-                // TODO: ignore any name that contains forbidden genres. Where(genre => !string.IsNullOrEmpty() && forbiddenGenres.Contains(genre))
                 var result = await _domManipulator.GetContentByCssSelectorAsync(
                     await _flaresolverrApi.GetHtml(_configuration.CurrentValue.FlaresolverrUrl,
                         _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector,

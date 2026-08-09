@@ -1,5 +1,3 @@
-using Microsoft.AspNetCore.Mvc.ModelBinding;
-
 namespace WhatsappBot.Options;
 
 public class RootSettings
