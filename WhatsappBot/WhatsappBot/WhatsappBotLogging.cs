@@ -24,4 +24,7 @@ public static partial class WhatsappBotLogging
     
     [LoggerMessage(EventId = 6, Level = LogLevel.Error, Message = "Getting flaresolverr solution:\n {message}")]
     public static partial void ErrorGettingFlaresolverrSolution(this ILogger logger, string message);
+    
+    [LoggerMessage(EventId = 7, Level = LogLevel.Error, Message = "Executing random content worker.")]
+    public static partial void ErrorRandomContentWorkerExecuteAsync(this ILogger logger, Exception ex);
 }
