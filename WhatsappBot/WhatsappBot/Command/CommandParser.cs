@@ -1,6 +1,6 @@
-using System.Text.RegularExpressions;
-
 namespace WhatsappBot.Command;
+
+using System.Text.RegularExpressions;
 
 public record CommandResult(string Command, List<string> Args);
 

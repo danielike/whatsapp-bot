@@ -1,6 +1,6 @@
-using WhatsappBot.ExternalApis.Evolution.Responses;
-
 namespace WhatsappBot.ExternalApis.Evolution;
+
+using Responses;
 
 public interface IEvolutionApiService
 {

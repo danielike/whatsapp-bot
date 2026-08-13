@@ -1,3 +1,5 @@
+namespace WhatsappBotTests;
+
 using System.Net;
 using System.Net.Http.Json;
 using System.Net.Mime;
@@ -7,8 +9,6 @@ using Moq.Protected;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
-
-namespace WhatsappBotTests;
 using Moq;
 
 public class EvolutionApiServiceTest

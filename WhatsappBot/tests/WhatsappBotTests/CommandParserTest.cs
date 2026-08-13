@@ -1,7 +1,6 @@
-﻿using WhatsappBot;
-using WhatsappBot.Command;
+﻿namespace WhatsappBotTests;
 
-namespace WhatsappBotTests;
+using WhatsappBot.Command;
 
 public class CommandParserTest
 {

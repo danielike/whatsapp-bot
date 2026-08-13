@@ -1,8 +1,8 @@
-using Microsoft.Extensions.Options;
-using WhatsappBot.Options;
-using WhatsappBot.RandomContentGenerator;
-
 namespace WhatsappBot.Command;
+
+using Microsoft.Extensions.Options;
+using Options;
+using RandomContentGenerator;
 
 public class CommandService : ICommandService
 {

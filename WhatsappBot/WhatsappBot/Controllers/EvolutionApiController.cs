@@ -1,10 +1,8 @@
-using System.Net;
-using System.Text.Json;
-using WhatsappBot.Command;
-using Microsoft.AspNetCore.Mvc;
-using WhatsappBot.RandomContentGenerator;
-
 namespace WhatsappBot.Controllers;
+
+using System.Text.Json;
+using Command;
+using Microsoft.AspNetCore.Mvc;
 
 [ApiController]
 [Route("api/[controller]")]

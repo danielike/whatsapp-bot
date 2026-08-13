@@ -1,10 +1,10 @@
+namespace WhatsappBot.ExternalApis.Evolution;
+
 using System.Net.Http.Headers;
 using Microsoft.Extensions.Options;
-using WhatsappBot.ExternalApis.Evolution.Requests;
-using WhatsappBot.ExternalApis.Evolution.Responses;
-using WhatsappBot.Options;
-
-namespace WhatsappBot.ExternalApis.Evolution;
+using Requests;
+using Responses;
+using Options;
 
 public class EvolutionApiService : IEvolutionApiService
 {

@@ -1,8 +1,6 @@
-using AngleSharp;
-using Moq;
-using WhatsappBot.ExternalApis.Evolution;
-
 namespace WhatsappBotTests;
+
+using WhatsappBot.ExternalApis.Evolution;
 
 public class EvolutionDelayCalculatorTest
 {
