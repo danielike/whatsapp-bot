@@ -5,18 +5,18 @@ using System.Text.Json.Serialization;
 public class EvolutionPayload
 {
     [JsonPropertyName("event")]
-    public string eventName { get; set; }
-    public string instance { get; set; }
-    public Data data { get; set; }
+    public string eventName { get; set; } = string.Empty;
+    public string instance { get; set; } = string.Empty;
+    public Data data { get; set; }  = new();
     [JsonIgnore]
-    public string destination { get; set; }
-    public string date_time { get; set; }
+    public string destination { get; set; } = string.Empty;
+    public string date_time { get; set; } = string.Empty;
     [JsonIgnore]
-    public string sender { get; set; }
+    public string sender { get; set; } = string.Empty;
     [JsonIgnore]
-    public string server_url { get; set; }
+    public string server_url { get; set; } = string.Empty;
     [JsonIgnore]
-    public string apikey { get; set; }
+    public string apikey { get; set; } = string.Empty;
     
     public const string MessagesUpsert = "messages.upsert";
     public const string AudioMessage = "audioMessage";
@@ -24,55 +24,53 @@ public class EvolutionPayload
 
 public class Data
 {
-    public Key key { get; set; }
-    public Message message { get; set; }
-    public string messageType { get; set; }
+    public Key key { get; set; } = new();
+    public Message message { get; set; } = new();
+    public string messageType { get; set; } = string.Empty;
     public int messageTimestamp { get; set; }
 }
 
 public class Key
 {
-    private string _remoteJid;
     public string remoteJid
     {
-        get => _remoteJid;
-        set => _remoteJid = new string(value.Where(char.IsDigit).ToArray());
-    }
+        get;
+        set => field = new string(value.Where(char.IsDigit).ToArray());
+    } = string.Empty;
 
     public bool fromMe { get; set; }
-    public string id { get; set; }
+    public string id { get; set; } = string.Empty;
 
-    private string _participant;
     public string participant
     {
-        get => _participant; 
-        set => _participant = '@' + new string(value.Where(char.IsDigit).ToArray());
-    }
+        get;
+        set => field = '@' + new string(value.Where(char.IsDigit).ToArray());
+    } = string.Empty;
 }
 
 public class Message
 {
-    public string conversation { get; set; }
-    public AudioMessage audioMessage { get; set; }
-    public string base64 { get; set; }
+    public string conversation { get; set; } = string.Empty;
+    public AudioMessage audioMessage { get; set; }  = new();
+    public string base64 { get; set; } = string.Empty;
 }
 
 public class AudioMessage
 {
     // The audio file (.enc extension)
-    public string url { get; set; }
-    public string mimetype { get; set; }
-    public Dictionary<string, int> fileSha256 { get; set; }
-    public FileLength fileLength { get; set; }
+    public string url { get; set; } = string.Empty;
+    public string mimetype { get; set; } = string.Empty;
+    public Dictionary<string, int> fileSha256 { get; set; } = new();
+    public FileLength fileLength { get; set; } = new();
     public int seconds { get; set; }
     public bool ptt { get; set; }
     // For decrypt the .enc audio file
-    public Dictionary<string, int> mediaKey { get; set; }
-    public Dictionary<string, int> fileEncSha256 { get; set; }
+    public Dictionary<string, int> mediaKey { get; set; } = new();
+    public Dictionary<string, int> fileEncSha256 { get; set; } = new();
     
     public class FileSha256
     {
-        public Dictionary<string, int> _0 { get; set; }
+        public Dictionary<string, int> _0 { get; set; } = new();
     }
     
     public class FileLength
@@ -84,6 +82,6 @@ public class AudioMessage
     
     public class MediaKey
     {
-        public Dictionary<string, int> _0 { get; set; }
+        public Dictionary<string, int> _0 { get; set; } = new();
     }
 }
