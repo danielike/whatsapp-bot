@@ -32,6 +32,13 @@ public class Data
 
 public class Key
 {
+    private string _remoteJid;
+    public string remoteJid
+    {
+        get => _remoteJid;
+        set => _remoteJid = new string(value.Where(char.IsDigit).ToArray());
+    }
+
     public bool fromMe { get; set; }
     public string id { get; set; }
 

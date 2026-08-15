@@ -1,5 +1,6 @@
 namespace WhatsappBot.Controllers;
 
+using System.Buffers;
 using Microsoft.Extensions.Options;
 using MessageWorker;
 using Options;
@@ -34,7 +35,14 @@ public class EvolutionApiController : ControllerBase
             using var doc = JsonDocument.Parse(payload.ToString()!);
             var json = JsonSerializer.Deserialize<EvolutionPayload>(doc.RootElement.GetRawText());
 
-            if (json!.eventName == EvolutionPayload.MessagesUpsert && json.data.messageType != EvolutionPayload.AudioMessage)
+            var allowedJids = SearchValues.Create(_configuration.CurrentValue.AllowedJids, StringComparison.OrdinalIgnoreCase);
+            
+            if (!allowedJids.Contains(json!.data.key.remoteJid))
+            {
+                return Ok();
+            }
+
+            if (json.eventName == EvolutionPayload.MessagesUpsert && json.data.messageType != EvolutionPayload.AudioMessage)
             {
                 var command = CommandParser.Parse(json.data.message.conversation);
 

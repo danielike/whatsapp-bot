@@ -35,5 +35,6 @@ public class ConfigurationOptions
     public string EvolutionApiTranscriberUrl { get; set; } = string.Empty;
     public string EvolutionApiTranscriberEndpoint { get; set; } = string.Empty;
     public string EvolutionApiTranscriberKey { get; set; } = string.Empty;
+    public string[] AllowedJids { get; set; } = [];
 }
 
