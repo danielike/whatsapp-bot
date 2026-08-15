@@ -1,6 +1,6 @@
-namespace WhatsappBot.RandomContentGenerator;
+namespace WhatsappBot.MessageWorker;
 
-public interface IRandomContentQueue
+public interface IMessageQueue
 {
     void Enqueue(BackgroundWorkItem item);
     ValueTask<BackgroundWorkItem> DequeueAsync(CancellationToken ct);

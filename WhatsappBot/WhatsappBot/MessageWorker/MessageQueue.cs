@@ -1,8 +1,8 @@
-namespace WhatsappBot.RandomContentGenerator;
+namespace WhatsappBot.MessageWorker;
 
 using System.Threading.Channels;
 
-public class RandomContentQueue : IRandomContentQueue
+public class MessageQueue : IMessageQueue
 {
     private readonly Channel<BackgroundWorkItem> _channel = Channel.CreateUnbounded<BackgroundWorkItem>(
     new UnboundedChannelOptions

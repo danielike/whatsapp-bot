@@ -2,18 +2,18 @@ namespace WhatsappBot.Command;
 
 using Microsoft.Extensions.Options;
 using Options;
-using RandomContentGenerator;
+using MessageWorker;
 
 public class CommandService : ICommandService
 {
     private const string Random = "random";
     private readonly IOptionsMonitor<ConfigurationOptions> _configuration;
-    private readonly IRandomContentQueue _randomContentQueue;
+    private readonly IMessageQueue _messageQueue;
 
-    public CommandService(IOptionsMonitor<ConfigurationOptions> configuration, IRandomContentQueue randomContentQueue)
+    public CommandService(IOptionsMonitor<ConfigurationOptions> configuration, IMessageQueue messageQueue)
     {
         _configuration = configuration;
-        _randomContentQueue = randomContentQueue;
+        _messageQueue = messageQueue;
     }
     
     public void TriggerCommandFunction(CommandResult command)
@@ -25,7 +25,7 @@ public class CommandService : ICommandService
                 if (_configuration.CurrentValue.GenerateRandomContentEnabled && CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
-                    _randomContentQueue.Enqueue(new BackgroundWorkItem(amount, mention, string.Empty));
+                    _messageQueue.Enqueue(new BackgroundWorkItem(amount, mention, string.Empty));
                 }
                 break;
         }

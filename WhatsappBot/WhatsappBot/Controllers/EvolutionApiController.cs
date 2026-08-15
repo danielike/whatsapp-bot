@@ -1,7 +1,9 @@
 namespace WhatsappBot.Controllers;
 
+using Microsoft.Extensions.Options;
+using MessageWorker;
+using Options;
 using System.Net.Mime;
-using RandomContentGenerator;
 using System.Text.Json;
 using Command;
 using Microsoft.AspNetCore.Mvc;
@@ -12,13 +14,15 @@ public class EvolutionApiController : ControllerBase
 {
     private readonly ILogger<EvolutionApiController> _logger;
     private readonly ICommandService _commandService;
-    private readonly IRandomContentQueue _randomContentQueue;
+    private readonly IMessageQueue _messageQueue;
+    private readonly IOptionsMonitor<ConfigurationOptions> _configuration;
 
-    public EvolutionApiController(ILogger<EvolutionApiController> logger, ICommandService commandService, IRandomContentQueue randomContentQueue)
+    public EvolutionApiController(ILogger<EvolutionApiController> logger, ICommandService commandService, IMessageQueue messageQueue, IOptionsMonitor<ConfigurationOptions> configuration)
     {
         _logger = logger;
         _commandService = commandService;
-        _randomContentQueue = randomContentQueue;
+        _messageQueue = messageQueue;
+        _configuration = configuration;
     }
 
     [HttpPost("messages")]
@@ -40,9 +44,9 @@ public class EvolutionApiController : ControllerBase
                 }
             }
             
-            if (json is { eventName: EvolutionPayload.MessagesUpsert, data.messageType: EvolutionPayload.AudioMessage })
+            if (_configuration.CurrentValue.TranscribeAudioEnabled && json is { eventName: EvolutionPayload.MessagesUpsert, data.messageType: EvolutionPayload.AudioMessage })
             {
-                _randomContentQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64));
+                _messageQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64));
             }
         }
         catch (Exception e)

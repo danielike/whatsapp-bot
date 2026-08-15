@@ -16,7 +16,7 @@ public class DomManipulator : IDomManipulator
         var name = document.QuerySelector(nameSelector);
         var genres = document.QuerySelectorAll(genresSelector);
         var keyName = name!.GetAttribute("content");
-        var values = genres!.Select(m => m.GetAttribute("content")).ToList();
+        var values = genres.Select(m => m.GetAttribute("content")).ToList();
         bool containsForbiddenGenres = values.Any(genre => forbiddenGenres.Contains(genre!));
         return containsForbiddenGenres ? (string.Empty, []) : (keyName, values);
     }

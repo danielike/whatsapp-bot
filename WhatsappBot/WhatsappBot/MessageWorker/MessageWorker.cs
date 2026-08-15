@@ -1,19 +1,20 @@
-namespace WhatsappBot.RandomContentGenerator;
+namespace WhatsappBot.MessageWorker;
 
+using RandomContentGenerator;
 using Microsoft.Extensions.Options;
 using ExternalApis.Evolution;
 using Options;
 using Microsoft.Extensions.Hosting;
 
-public class RandomContentWorker : BackgroundService
+public class MessageWorker : BackgroundService
 {
-    private readonly IRandomContentQueue _queue;
+    private readonly IMessageQueue _queue;
     private readonly IOptionsMonitor<ConfigurationOptions> _options;
     private readonly IRandomContentGenerator _randomContentGenerator;
     private readonly IServiceScopeFactory _scopeFactory;
-    private readonly ILogger<RandomContentWorker> _logger;
+    private readonly ILogger<MessageWorker> _logger;
 
-    public RandomContentWorker(IRandomContentQueue queue, IOptionsMonitor<ConfigurationOptions> options, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<RandomContentWorker> logger)
+    public MessageWorker(IMessageQueue queue, IOptionsMonitor<ConfigurationOptions> options, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<MessageWorker> logger)
     {
         _queue = queue;
         _options = options;

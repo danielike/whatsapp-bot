@@ -7,6 +7,7 @@ using WhatsappBot.Common;
 using WhatsappBot.DomManipulator;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.ExternalApis.Flaresolverr;
+using WhatsappBot.MessageWorker;
 using WhatsappBot.Options;
 using WhatsappBot.RandomContentGenerator;
 
@@ -57,8 +58,8 @@ builder.Services.AddScoped<ICommandService, CommandService>();
 builder.Services.AddSingleton<IFlaresolverrApi, FlaresolverrApi>();
 builder.Services.AddSingleton<IDomManipulator, DomManipulator>();
 builder.Services.AddSingleton<IRandomContentGenerator, RandomContentGenerator>();
-builder.Services.AddSingleton<IRandomContentQueue, RandomContentQueue>();
-builder.Services.AddHostedService<RandomContentWorker>();
+builder.Services.AddSingleton<IMessageQueue, MessageQueue>();
+builder.Services.AddHostedService<MessageWorker>();
 
 // Add services to the container.
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
