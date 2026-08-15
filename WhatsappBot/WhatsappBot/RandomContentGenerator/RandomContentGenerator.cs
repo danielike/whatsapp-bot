@@ -1,5 +1,6 @@
 namespace WhatsappBot.RandomContentGenerator;
 
+using System.Buffers;
 using Microsoft.Extensions.Options;
 using DomManipulator;
 using ExternalApis.Flaresolverr;
@@ -26,12 +27,11 @@ public class RandomContentGenerator : IRandomContentGenerator
     
     public async Task<string> Generate(int number, string mention)
     {
-        HashSet<string> forbiddenGenres = new( 
-            _configuration.CurrentValue.ForbiddenGenres
-                .Split(',')
+        var forbiddenGenres = SearchValues.Create(
+            _configuration.CurrentValue.AllowedJids
                 .Select(s => s.Trim())
-                .Where(s => !string.IsNullOrWhiteSpace(s)),
-            StringComparer.OrdinalIgnoreCase
+                .Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
+            StringComparison.OrdinalIgnoreCase
         );
         
         _logger.LogGeneratorRunningAt(DateTimeOffset.Now);
@@ -46,13 +46,14 @@ public class RandomContentGenerator : IRandomContentGenerator
                         _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector,
                     _configuration.CurrentValue.GenresSelector, forbiddenGenres);
     
-                // repeat the get html content until any series without forbidden genres
-                while (result.Key!.Length == 0 && !result.Values.Any())
+                // repeat the get html content until any series without forbidden genres and not duplicated
+                while (result.Key!.Length == 0 && !result.Values.Any() && contents.Any(content => content.Key == result.Key))
                 {
                     result = await _domManipulator.GetContentByCssSelectorAsync(
                         await _flaresolverrApi.GetHtml(_configuration.CurrentValue.FlaresolverrUrl,
                             _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector,
                         _configuration.CurrentValue.GenresSelector, forbiddenGenres);
+                    await Task.Delay(Random.Shared.Next(50, 1000));
                 }
                 
                 contents[i] = result;

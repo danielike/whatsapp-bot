@@ -20,7 +20,7 @@ public class LogLevel
 
 public class ConfigurationOptions
 {
-    public string ForbiddenGenres { get; set; } = string.Empty;
+    public string[] ForbiddenGenres { get; set; } = [];
     public string FlaresolverrUrl { get; set; } = string.Empty;
     public string SiteUrl { get; set; } = string.Empty;
     public string NameSelector { get; set; } = string.Empty;

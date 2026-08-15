@@ -1,5 +1,6 @@
 namespace WhatsappBot.DomManipulator;
 
+using System.Buffers;
 using AngleSharp;
 
 public class DomManipulator : IDomManipulator
@@ -8,7 +9,7 @@ public class DomManipulator : IDomManipulator
         string html, 
         string nameSelector, 
         string genresSelector, 
-        HashSet<string> forbiddenGenres)
+        SearchValues<string> forbiddenGenres)
     {
         var config = Configuration.Default.WithDefaultLoader();
         var context = BrowsingContext.New(config);
