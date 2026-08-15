@@ -1,6 +1,6 @@
 namespace WhatsappBot.ExternalApis.Evolution;
 
-using System.Net.Http.Headers;
+using Common;
 using Microsoft.Extensions.Options;
 using Requests;
 using Responses;
@@ -8,14 +8,16 @@ using Options;
 
 public class EvolutionApiService : IEvolutionApiService
 {
-    private readonly HttpClient _httpClient;
+    private readonly HttpClient _evolutionApiClient;
+    private readonly HttpClient _evolutionApiTranscriberClient;
     private readonly IEvolutionDelayCalculator _evolutionDelayCalculator;
     private readonly IOptionsMonitor<ConfigurationOptions> _options;
     private readonly ILogger<EvolutionApiService> _logger;
     
     public EvolutionApiService(IHttpClientFactory httpClientFactory, IEvolutionDelayCalculator evolutionDelayCalculator, IOptionsMonitor<ConfigurationOptions> options, ILogger<EvolutionApiService> logger)
     {
-        _httpClient = httpClientFactory.CreateClient(nameof(EvolutionApiService));
+        _evolutionApiClient = httpClientFactory.CreateClient(nameof(EvolutionApiService));
+        _evolutionApiTranscriberClient = httpClientFactory.CreateClient(HttpClientNames.EvolutionApiTranscriber); 
         _evolutionDelayCalculator = evolutionDelayCalculator;
         _options = options ?? throw new ArgumentNullException(nameof(options));
         _logger = logger;
@@ -32,7 +34,7 @@ public class EvolutionApiService : IEvolutionApiService
             Delay = _evolutionDelayCalculator.GetHumanDelay(message)
         };
         
-        var response = await _httpClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiSendMessageEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
+        var response = await _evolutionApiClient.PostAsJsonAsync($"{_options.CurrentValue.EvolutionApiSendMessageEndpoint}/{_options.CurrentValue.EvolutionApiInstance}", request);
         
         if (!response.IsSuccessStatusCode)
         {
@@ -42,16 +44,17 @@ public class EvolutionApiService : IEvolutionApiService
         return response;
     }
 
-    public async Task<EvolutionApiTranscriberResponse> TranscribeAudio(string audioPath, string language)
+    public async Task<EvolutionApiTranscriberResponse> TranscribeAudio(string base64Audio)
     {
-        var form = new MultipartFormDataContent();
-        form.Add(new StringContent(language), "language");
-        var fileStream = File.OpenRead(audioPath);
-        var streamContent = new StreamContent(fileStream);
-        streamContent.Headers.ContentType = MediaTypeHeaderValue.Parse("audio/ogg");
-        form.Add(streamContent, "file", Path.GetFileName(audioPath));
+        var formData = new FormUrlEncodedContent(new[]
+        {
+            new KeyValuePair<string, string>("base64", base64Audio)
+            // Note: Your new curl command removed the "format" field. 
+            // If the server requires it, add: new KeyValuePair<string, string>("format", "mp3")
+        });
         
-        var response = await _httpClient.PostAsync($"{_options.CurrentValue.EvolutionApiTranscriberEndpoint}", form);
+        var response = await _evolutionApiTranscriberClient.PostAsync($"{_options.CurrentValue.EvolutionApiTranscriberEndpoint}", formData);
+        
         if (!response.IsSuccessStatusCode)
         {
             _logger.ErrorTranscribingAudio(response.StatusCode);

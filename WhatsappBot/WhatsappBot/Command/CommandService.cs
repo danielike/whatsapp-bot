@@ -25,9 +25,7 @@ public class CommandService : ICommandService
                 if (_configuration.CurrentValue.GenerateRandomContentEnabled && CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
-                    // TODO: use worker instead: fire and forget.
-                    _randomContentQueue.Enqueue(new BackgroundWorkItem(amount, mention));
-                    // return await _evolutionApiService.SendMessage(_configuration.CurrentValue.EvolutionApiSendMessageId, await _randomContentGenerator.Generate(amount, mention), mention);
+                    _randomContentQueue.Enqueue(new BackgroundWorkItem(amount, mention, string.Empty));
                 }
                 break;
         }

@@ -1,7 +1,9 @@
+using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Serilog;
 using WhatsappBot.Command;
+using WhatsappBot.Common;
 using WhatsappBot.DomManipulator;
 using WhatsappBot.ExternalApis.Evolution;
 using WhatsappBot.ExternalApis.Flaresolverr;
@@ -28,7 +30,7 @@ builder.Services.AddHttpClient(
     client =>
     {
         client.BaseAddress = new Uri($"{configurationOptions!.FlaresolverrUrl}");
-        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
     });
 
 builder.Services.AddHttpClient(
@@ -36,8 +38,17 @@ builder.Services.AddHttpClient(
     client =>
     {
         client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiUrl}");
-        client.DefaultRequestHeaders.Add("Accept", "application/json");
+        client.DefaultRequestHeaders.Add("Accept" , MediaTypeNames.Application.Json);
         client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions!.EvolutionApiKey}");
+    });
+
+builder.Services.AddHttpClient(
+    HttpClientNames.EvolutionApiTranscriber,
+    client =>
+    {
+        client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiTranscriberUrl}");
+        client.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
+        client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions!.EvolutionApiTranscriberKey}");
     });
 
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();

@@ -10,10 +10,12 @@ public sealed class BackgroundWorkItem
 {
     public int Amount { get; }
     public string Mention { get; }
-    
-    public BackgroundWorkItem(int amount, string mention)
+    public string Base64Audio { get; }
+
+    public BackgroundWorkItem(int amount, string mention, string base64Audio)
     {
         Amount = amount;
         Mention = mention;
+        Base64Audio = base64Audio;
     }
 }

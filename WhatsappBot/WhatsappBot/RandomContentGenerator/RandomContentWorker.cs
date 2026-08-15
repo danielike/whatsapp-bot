@@ -8,16 +8,14 @@ using Microsoft.Extensions.Hosting;
 public class RandomContentWorker : BackgroundService
 {
     private readonly IRandomContentQueue _queue;
-    private readonly IHttpClientFactory _httpClientFactory;
     private readonly IOptionsMonitor<ConfigurationOptions> _options;
     private readonly IRandomContentGenerator _randomContentGenerator;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<RandomContentWorker> _logger;
 
-    public RandomContentWorker(IRandomContentQueue queue, IHttpClientFactory httpClientFactory, IOptionsMonitor<ConfigurationOptions> options, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<RandomContentWorker> logger)
+    public RandomContentWorker(IRandomContentQueue queue, IOptionsMonitor<ConfigurationOptions> options, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<RandomContentWorker> logger)
     {
         _queue = queue;
-        _httpClientFactory = httpClientFactory;
         _options = options;
         _randomContentGenerator = randomContentGenerator;
         _scopeFactory = scopeFactory;
@@ -34,7 +32,17 @@ public class RandomContentWorker : BackgroundService
             {
                 using var scope = _scopeFactory.CreateScope();
                 var evolutionApiService = scope.ServiceProvider.GetRequiredService<IEvolutionApiService>();
-                await evolutionApiService.SendMessage(_options.CurrentValue.EvolutionApiSendMessageId,  await _randomContentGenerator.Generate(item.Amount, item.Mention), item.Mention);
+                
+                if (item.Amount != 0)
+                {
+                    await evolutionApiService.SendMessage(_options.CurrentValue.EvolutionApiSendMessageId,  await _randomContentGenerator.Generate(item.Amount, item.Mention), item.Mention);
+                }
+
+                if (!string.IsNullOrEmpty(item.Base64Audio))
+                {
+                    await evolutionApiService.SendMessage(_options.CurrentValue.EvolutionApiSendMessageId, $"{item.Mention}\n{(await evolutionApiService.TranscribeAudio(item.Base64Audio)).Transcription}", item.Mention);
+                }
+
             }
             catch (OperationCanceledException) when (stoppingToken.IsCancellationRequested)
             {

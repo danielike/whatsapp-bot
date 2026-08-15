@@ -24,7 +24,6 @@ public class EvolutionPayload
 
 public class Data
 {
-    [JsonIgnore]
     public Key key { get; set; }
     public Message message { get; set; }
     public string messageType { get; set; }
@@ -33,15 +32,22 @@ public class Data
 
 public class Key
 {
-    public string remoteJid { get; set; }
     public bool fromMe { get; set; }
     public string id { get; set; }
+
+    private string _participant;
+    public string participant
+    {
+        get => _participant; 
+        set => _participant = '@' + new string(value.Where(char.IsDigit).ToArray());
+    }
 }
 
 public class Message
 {
     public string conversation { get; set; }
     public AudioMessage audioMessage { get; set; }
+    public string base64 { get; set; }
 }
 
 public class AudioMessage
@@ -49,13 +55,13 @@ public class AudioMessage
     // The audio file (.enc extension)
     public string url { get; set; }
     public string mimetype { get; set; }
-    public byte[] fileSha256 { get; set; } = new byte[32];
+    public Dictionary<string, int> fileSha256 { get; set; }
     public FileLength fileLength { get; set; }
     public int seconds { get; set; }
     public bool ptt { get; set; }
     // For decrypt the .enc audio file
-    public byte[] mediaKey { get; set; } = new byte[32];
-    public byte[] fileEncSha256 { get; set; } = new byte[32];
+    public Dictionary<string, int> mediaKey { get; set; }
+    public Dictionary<string, int> fileEncSha256 { get; set; }
     
     public class FileSha256
     {

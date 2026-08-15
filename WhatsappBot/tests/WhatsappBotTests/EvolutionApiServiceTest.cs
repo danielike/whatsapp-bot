@@ -112,8 +112,8 @@ public class EvolutionApiServiceTest
             .Returns(450);
         
         var evolutionApiService = new EvolutionApiService(_httpClientFactoryMock.Object, _evolutionDelayCalculatorMock.Object, _optionsMonitorMock.Object, _logger.Object);
-        
-        var response = await evolutionApiService.TranscribeAudio(Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.UserProfile), "Downloads/audio_tests/tonto_insulto.ogg"), "es");
+
+        var response = await evolutionApiService.TranscribeAudio("dW5rbm93bmNvbXBvc2l0aW9uY29udHJvbGVhc3lxdWlldGx5dGhyb3d0b29rZWR1Y2E=");
         
         Assert.Contains(expectedResponse.Transcription, response.Transcription);
     }

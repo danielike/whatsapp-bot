@@ -5,5 +5,5 @@ using Responses;
 public interface IEvolutionApiService
 {
     Task<HttpResponseMessage> SendMessage(string number, string message, string mention);
-    Task<EvolutionApiTranscriberResponse> TranscribeAudio(string audioPath, string language);
+    Task<EvolutionApiTranscriberResponse> TranscribeAudio(string base64Audio);
 }
