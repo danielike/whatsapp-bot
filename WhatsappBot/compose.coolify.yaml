@@ -2,7 +2,7 @@
   whatsappbot:
     image: whatsappbot
     environment:
-      - PORT: 5013
+      - PORT=5013
       # --- Logging Section ---
       - Logging__LogLevel__Default=${LOG_LEVEL_DEFAULT:-Information}
       - Logging__LogLevel__Microsoft.AspNetCore=${LOG_LEVEL_MICROSOFT:-Warning}
