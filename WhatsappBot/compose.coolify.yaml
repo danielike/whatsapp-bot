@@ -1,0 +1,65 @@
+﻿services:
+  whatsappbot:
+    image: whatsappbot
+    environment:
+      - PORT: 5013
+      # --- Logging Section ---
+      - Logging__LogLevel__Default=${LOG_LEVEL_DEFAULT:-Information}
+      - Logging__LogLevel__Microsoft.AspNetCore=${LOG_LEVEL_MICROSOFT:-Warning}
+
+      # --- ConfigurationOptions Section ---
+      # Forbidden Genres (Array)
+      - ConfigurationOptions__ForbiddenGenres__0=${FORBIDDEN_GENRE_0:-Genre1}
+      - ConfigurationOptions__ForbiddenGenres__1=${FORBIDDEN_GENRE_1:-Genre2}
+      - ConfigurationOptions__ForbiddenGenres__2=${FORBIDDEN_GENRE_2:-Genre3}
+      
+      # URLs and Endpoints
+      - ConfigurationOptions__FlaresolverrUrl=${FLARESOLVERR_URL:-http://localhost:8191/v1}
+      - ConfigurationOptions__SiteUrl=${SITE_URL:?} # The site where you get random content
+      - ConfigurationOptions__NameSelector=${NAME_SELECTOR:-meta[property="article:section"]}
+      - ConfigurationOptions__GenresSelector=${GENRES_SELECTOR:-meta[property="article:tag"]}
+      
+      # Evolution API Configuration
+      - ConfigurationOptions__EvolutionApiUrl=${EVOLUTION_API_URL:-http://localhost:8082}
+      - ConfigurationOptions__EvolutionApiInstance=${EVOLUTION_API_INSTANCE:-Bot}
+      - ConfigurationOptions__EvolutionApiKey=${EVOLUTION_API_KEY:?} # Required: Secret
+      - ConfigurationOptions__EvolutionApiSendMessageEndpoint=${EVOLUTION_SEND_ENDPOINT:-/message/sendText}
+      - ConfigurationOptions__EvolutionApiSendMessageId=${EVOLUTION_SEND_ID:?} # Required: Target ID
+      
+      # Transcriber Configuration
+      - ConfigurationOptions__EvolutionApiTranscriberUrl=${TRANSCRIBER_URL:-http://localhost:4040}
+      - ConfigurationOptions__EvolutionApiTranscriberEndpoint=${TRANSCRIBER_ENDPOINT:-/transcribe}
+      - ConfigurationOptions__EvolutionApiTranscriberKey=${TRANSCRIBER_KEY:?} # Required: Secret
+      
+      # Feature Toggles
+      - ConfigurationOptions__GenerateRandomContentEnabled=${GENERATE_RANDOM_CONTENT:-true}
+      - ConfigurationOptions__TranscribeAudioEnabled=${TRANSCRIBE_AUDIO:-true}
+      
+      # Allowed JIDs (Array)
+      - ConfigurationOptions__AllowedJids__0=${ALLOWED_JID_0:-120363428730667729}
+      - ConfigurationOptions__AllowedJids__1=${ALLOWED_JID_1:-0}
+      - ConfigurationOptions__AllowedJids__2=${ALLOWED_JID_2:-0}
+
+      # --- Serilog Section ---
+      - Serilog__Using__0=${SERILOG_USING_0:-Serilog.Sinks.File}
+      - Serilog__MinimumLevel__Default=${SERILOG_MIN_LEVEL:-Information}
+      - Serilog__Enrich__0=${SERILOG_ENRICH_0:-FromLogContext}
+      
+      # Serilog File Settings
+      - Serilog__WriteTo__0__Name=${SERILOG_FILE_NAME:-File}
+      - Serilog__WriteTo__0__Args__path=${SERILOG_FILE_PATH:-Logs/log-.log}
+      - Serilog__WriteTo__0__Args__rollingInterval=${SERILOG_ROLLING_INTERVAL:-Day}
+      - Serilog__WriteTo__0__Args__fileSizeLimitBytes=${SERILOG_FILE_SIZE_LIMIT:-10485760}
+      - Serilog__WriteTo__0__Args__rollOnFileSizeLimit=${SERILOG_ROLL_ON_LIMIT:-true}
+      - Serilog__WriteTo__0__Args__outputTemplate=${SERILOG_FILE_TEMPLATE:-{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}}
+
+      # Serilog Console Settings
+      - Serilog__WriteTo__1__Name=${SERILOG_CONSOLE_NAME:-Console}
+      - Serilog__WriteTo__1__Args__outputTemplate=${SERILOG_CONSOLE_TEMPLATE:-[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}}
+
+      # --- Root Level ---
+      - AllowedHosts=${ALLOWED_HOSTS:-*}
+    build:
+      context: .
+      dockerfile: WhatsappBot/Dockerfile
+
