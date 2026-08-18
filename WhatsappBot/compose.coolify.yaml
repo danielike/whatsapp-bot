@@ -8,6 +8,7 @@ services:
     restart: unless-stopped
     environment:
       - ASPNETCORE_URLS=http://+:5013
+      - Logging__LogLevel__Default=${LOG_LEVEL_DEFAULT}
       - Logging__LogLevel__Microsoft___AspNetCore=${LOG_LEVEL_MICROSOFT}
       - ConfigurationOptions__ForbiddenGenres__0=${FORBIDDEN_GENRE_0}
       - ConfigurationOptions__ForbiddenGenres__1=${FORBIDDEN_GENRE_1}
@@ -30,6 +31,7 @@ services:
       - ConfigurationOptions__AllowedJids__1=${ALLOWED_JID_1}
       - ConfigurationOptions__AllowedJids__2=${ALLOWED_JID_2}
       - Serilog__Using__0='Serilog.Sinks.File'
+      - Serilog__MinimumLevel__Default=${SERILOG_MIN_LEVEL}
       - Serilog__Enrich__0=FromLogContext
       - Serilog__WriteTo__0__Name=File
       - Serilog__WriteTo__0__Args__path='Logs/log-.log'
