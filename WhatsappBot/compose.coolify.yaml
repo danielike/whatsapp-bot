@@ -9,7 +9,7 @@ services:
     environment:
       - PORT=5013
       - Logging__LogLevel__Default=${LOG_LEVEL_DEFAULT}
-      - Logging__LogLevel__Microsoft.AspNetCore=${LOG_LEVEL_MICROSOFT}
+      - Logging__LogLevel__Microsoft___AspNetCore=${LOG_LEVEL_MICROSOFT}
       - ConfigurationOptions__ForbiddenGenres__0=${FORBIDDEN_GENRE_0}
       - ConfigurationOptions__ForbiddenGenres__1=${FORBIDDEN_GENRE_1}
       - ConfigurationOptions__ForbiddenGenres__2=${FORBIDDEN_GENRE_2}
@@ -30,15 +30,15 @@ services:
       - ConfigurationOptions__AllowedJids__0=${ALLOWED_JID_0}
       - ConfigurationOptions__AllowedJids__1=${ALLOWED_JID_1}
       - ConfigurationOptions__AllowedJids__2=${ALLOWED_JID_2}
-      - Serilog__Using__0=Serilog.Sinks.File
+      - Serilog__Using__0='Serilog.Sinks.File'
       - Serilog__MinimumLevel__Default=${SERILOG_MIN_LEVEL}
       - Serilog__Enrich__0=FromLogContext
       - Serilog__WriteTo__0__Name=File
-      - Serilog__WriteTo__0__Args__path=Logs/log-.log
+      - Serilog__WriteTo__0__Args__path='Logs/log-.log'
       - Serilog__WriteTo__0__Args__rollingInterval=Day
       - Serilog__WriteTo__0__Args__fileSizeLimitBytes=10485760
       - Serilog__WriteTo__0__Args__rollOnFileSizeLimit=true
-      - Serilog__WriteTo__0__Args__outputTemplate={Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}
+      - Serilog__WriteTo__0__Args__outputTemplate='{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {SourceContext} {Message:lj}{NewLine}{Exception}'
       - Serilog__WriteTo__1__Name=Console
-      - Serilog__WriteTo__1__Args__outputTemplate=[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}
+      - Serilog__WriteTo__1__Args__outputTemplate='[{Timestamp:HH:mm:ss} {Level:u3}] {Message:lj}{NewLine}{Exception}'
       - AllowedHosts=${ALLOWED_HOSTS}
