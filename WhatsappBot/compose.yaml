@@ -1,4 +1,4 @@
-﻿services:
+services:
   whatsappbot:
     image: whatsappbot
     build:
