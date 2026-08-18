@@ -34,7 +34,9 @@ public class EvolutionApiController : ControllerBase
         {
             using var doc = JsonDocument.Parse(payload.ToString()!);
             var json = JsonSerializer.Deserialize<EvolutionPayload>(doc.RootElement.GetRawText());
-
+            
+            _logger.ShowAllowedJids(string.Join(',', _configuration.CurrentValue.AllowedJids));
+            
             var allowedJids = SearchValues.Create(_configuration.CurrentValue.AllowedJids, StringComparison.OrdinalIgnoreCase);
             
             if (!allowedJids.Contains(json!.data.key.remoteJid))

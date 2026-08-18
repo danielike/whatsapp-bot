@@ -27,4 +27,7 @@ public static partial class WhatsappBotLogging
     
     [LoggerMessage(EventId = 7, Level = LogLevel.Error, Message = "Executing random content worker.")]
     public static partial void ErrorRandomContentWorkerExecuteAsync(this ILogger logger, Exception ex);
+    
+    [LoggerMessage(EventId = 8, Level = LogLevel.Debug, Message = "Allowed Jids: {allowedJids}.")]
+    public static partial void ShowAllowedJids(this ILogger logger, string allowedJids);
 }
