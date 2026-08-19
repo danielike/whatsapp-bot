@@ -1,5 +1,6 @@
 namespace WhatsappBot.RandomContentGenerator;
 
+using System.Text.RegularExpressions;
 using System.Text.Json;
 using System.Buffers;
 using Microsoft.Extensions.Options;
@@ -48,8 +49,8 @@ public class RandomContentGenerator : IRandomContentGenerator
             {
                 var result = await _domManipulator.GetContentByCssSelectorAsync(
                     await _flaresolverrApi.GetHtml(_configuration.CurrentValue.FlaresolverrUrl,
-                        _configuration.CurrentValue.SiteUrl), _configuration.CurrentValue.NameSelector,
-                    _configuration.CurrentValue.GenresSelector, forbiddenGenres);
+                        _configuration.CurrentValue.SiteUrl), DecodeEscapedText(_configuration.CurrentValue.NameSelector),
+                    DecodeEscapedText(_configuration.CurrentValue.GenresSelector), forbiddenGenres);
     
                 // repeat the get html content until any series without forbidden genres and not duplicated
                 while (result.Key!.Length == 0 && !result.Values.Any() && contents.Any(content => content.Key == result.Key))
@@ -75,5 +76,25 @@ public class RandomContentGenerator : IRandomContentGenerator
         _logger.LogContentGenerated($"{ string.Join(",\n", contents.SelectMany(genres => genres.Values).Select(genre => genre ?? string.Empty ) ) }");
         
         return $"{mention}\n{seriesNames}";
+    }
+    
+    private string DecodeEscapedText(string s)
+    {
+        // Decode only if the string still contains unicode escape text
+        if (s.Contains(@"\u") || s.Contains(@"\\u"))
+        {
+            s = Regex.Replace(s, @"\\u([0-9a-fA-F]{4})", m =>
+            {
+                var code = Convert.ToInt32(m.Groups[1].Value, 16);
+                return char.ConvertFromUtf32(code);
+            });
+        }
+
+        // Collapse only common remaining escape forms
+        s = s.Replace("\\\"", "\"");
+        s = s.Replace("\\'", "'");
+        s = s.Replace(@"\\", @"\"); // optional; helps when backslashes are doubled
+
+        return s;
     }
 }
