@@ -1,5 +1,6 @@
 namespace WhatsappBot.RandomContentGenerator;
 
+using System.Text.Json;
 using System.Buffers;
 using Microsoft.Extensions.Options;
 using DomManipulator;
@@ -35,6 +36,10 @@ public class RandomContentGenerator : IRandomContentGenerator
         );
         
         _logger.LogGeneratorRunningAt(DateTimeOffset.Now);
+        
+        _logger.ShowNameSelector(JsonSerializer.Serialize(_configuration.CurrentValue.NameSelector));
+        
+        _logger.ShowGenresSelector(JsonSerializer.Serialize(_configuration.CurrentValue.GenresSelector));
         
         var contents = new (string? Key, IEnumerable<string?> Values)[number];
         try

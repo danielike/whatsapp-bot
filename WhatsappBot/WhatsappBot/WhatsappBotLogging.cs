@@ -30,4 +30,10 @@ public static partial class WhatsappBotLogging
     
     [LoggerMessage(EventId = 8, Level = LogLevel.Debug, Message = "Allowed Jids: {allowedJids}.")]
     public static partial void ShowAllowedJids(this ILogger logger, string allowedJids);
+    
+    [LoggerMessage(EventId = 9, Level = LogLevel.Debug, Message = "Name Selector: {nameSelector}.")]
+    public static partial void ShowNameSelector(this ILogger logger, string nameSelector);
+    
+    [LoggerMessage(EventId = 10, Level = LogLevel.Debug, Message = "Genres Selector: {genresSelector}.")]
+    public static partial void ShowGenresSelector(this ILogger logger, string genresSelector);
 }
