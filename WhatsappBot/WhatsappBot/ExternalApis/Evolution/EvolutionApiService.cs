@@ -46,14 +46,12 @@ public class EvolutionApiService : IEvolutionApiService
 
     public async Task<EvolutionApiTranscriberResponse> TranscribeAudio(string base64Audio)
     {
-        var formData = new FormUrlEncodedContent(new[]
-        {
-            new KeyValuePair<string, string>("base64", base64Audio)
-            // Note: Your new curl command removed the "format" field. 
-            // If the server requires it, add: new KeyValuePair<string, string>("format", "mp3")
-        });
+        using var formData = new MultipartFormDataContent();
         
-        var response = await _evolutionApiTranscriberClient.PostAsync($"{_options.CurrentValue.EvolutionApiTranscriberEndpoint}", formData);
+        formData.Add(new StringContent($"data:audio/ogg;base64,{base64Audio}"), "url");
+        formData.Add(new StringContent("whisper-large-v3-turbo"), "model");
+        
+        var response = await _evolutionApiTranscriberClient.PostAsync(_options.CurrentValue.EvolutionApiTranscriberEndpoint, formData);
         
         if (!response.IsSuccessStatusCode)
         {

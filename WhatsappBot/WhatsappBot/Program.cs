@@ -1,3 +1,4 @@
+using System.Net.Http.Headers;
 using System.Net.Mime;
 using System.Text.Json;
 using System.Text.Json.Serialization;
@@ -48,8 +49,7 @@ builder.Services.AddHttpClient(
     client =>
     {
         client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiTranscriberUrl}");
-        client.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
-        client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions!.EvolutionApiTranscriberKey}");
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configurationOptions!.EvolutionApiTranscriberKey);
     });
 
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();
