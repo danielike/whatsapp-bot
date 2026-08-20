@@ -5,7 +5,6 @@ Simple bot that allows you to run commands and do automatic audio translation in
 ## Previous requirements
 
 - https://github.com/FlareSolverr/FlareSolverr
-- https://github.com/danielike/evolution-audio-converter
 - https://github.com/evolution-foundation/evolution-api
 - https://dotnet.microsoft.com/en-us/download/dotnet/10.0
 
