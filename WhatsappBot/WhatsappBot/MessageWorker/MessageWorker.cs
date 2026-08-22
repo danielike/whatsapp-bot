@@ -1,23 +1,19 @@
 namespace WhatsappBot.MessageWorker;
 
 using RandomContentGenerator;
-using Microsoft.Extensions.Options;
 using ExternalApis.Evolution;
-using Options;
 using Microsoft.Extensions.Hosting;
 
 public class MessageWorker : BackgroundService
 {
     private readonly IMessageQueue _queue;
-    private readonly IOptionsMonitor<ConfigurationOptions> _options;
     private readonly IRandomContentGenerator _randomContentGenerator;
     private readonly IServiceScopeFactory _scopeFactory;
     private readonly ILogger<MessageWorker> _logger;
 
-    public MessageWorker(IMessageQueue queue, IOptionsMonitor<ConfigurationOptions> options, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<MessageWorker> logger)
+    public MessageWorker(IMessageQueue queue, IRandomContentGenerator randomContentGenerator, IServiceScopeFactory scopeFactory, ILogger<MessageWorker> logger)
     {
         _queue = queue;
-        _options = options;
         _randomContentGenerator = randomContentGenerator;
         _scopeFactory = scopeFactory;
         _logger = logger;
@@ -34,14 +30,14 @@ public class MessageWorker : BackgroundService
                 using var scope = _scopeFactory.CreateScope();
                 var evolutionApiService = scope.ServiceProvider.GetRequiredService<IEvolutionApiService>();
                 
-                if (item.Amount != 0)
+                if (item.MessageType is BackgroundWorkItem.BackgroundMessageType.Command)
                 {
-                    await evolutionApiService.SendMessage(_options.CurrentValue.EvolutionApiSendMessageId,  await _randomContentGenerator.Generate(item.Amount, item.Mention), item.Mention);
+                    await evolutionApiService.SendMessage(item.Id,  await _randomContentGenerator.Generate(item.Amount, item.Mention), item.Mention);
                 }
 
-                if (!string.IsNullOrEmpty(item.Base64Audio))
+                if (item.MessageType is BackgroundWorkItem.BackgroundMessageType.AudioTranscription)
                 {
-                    await evolutionApiService.SendMessage(_options.CurrentValue.EvolutionApiSendMessageId, $"{item.Mention}\n{(await evolutionApiService.TranscribeAudio(item.Base64Audio)).Transcription}", item.Mention);
+                    await evolutionApiService.SendMessage(item.Id, $"{item.Mention}\n{(await evolutionApiService.TranscribeAudio(item.Base64Audio)).Transcription}", item.Mention);
                 }
 
             }

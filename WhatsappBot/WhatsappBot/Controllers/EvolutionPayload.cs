@@ -32,11 +32,7 @@ public class Data
 
 public class Key
 {
-    public string remoteJid
-    {
-        get;
-        set => field = new string(value.Where(char.IsDigit).ToArray());
-    } = string.Empty;
+    public string remoteJid { get; set; } = string.Empty;
 
     public bool fromMe { get; set; }
     public string id { get; set; } = string.Empty;

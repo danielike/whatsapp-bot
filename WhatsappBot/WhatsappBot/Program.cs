@@ -41,7 +41,7 @@ builder.Services.AddHttpClient(
     {
         client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiUrl}");
         client.DefaultRequestHeaders.Add("Accept" , MediaTypeNames.Application.Json);
-        client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions!.EvolutionApiKey}");
+        client.DefaultRequestHeaders.Add("apikey", $"{configurationOptions.EvolutionApiKey}");
     });
 
 builder.Services.AddHttpClient(
@@ -49,7 +49,7 @@ builder.Services.AddHttpClient(
     client =>
     {
         client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiTranscriberUrl}");
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configurationOptions!.EvolutionApiTranscriberKey);
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configurationOptions.EvolutionApiTranscriberKey);
     });
 
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();

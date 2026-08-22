@@ -16,7 +16,7 @@ public class CommandService : ICommandService
         _messageQueue = messageQueue;
     }
     
-    public void TriggerCommandFunction(CommandResult command)
+    public void TriggerCommandFunction(CommandResult command, string id)
     {
         switch (command.Command)
         {
@@ -25,7 +25,7 @@ public class CommandService : ICommandService
                 if (_configuration.CurrentValue.GenerateRandomContentEnabled && CommandParser.TryGetIntArg(command, 0, out int amount) &&
                     CommandParser.TryGetMention(command, 1, out string mention))
                 {
-                    _messageQueue.Enqueue(new BackgroundWorkItem(amount, mention, string.Empty));
+                    _messageQueue.Enqueue(new BackgroundWorkItem(amount, mention, string.Empty, id, BackgroundWorkItem.BackgroundMessageType.Command));
                 }
                 break;
         }

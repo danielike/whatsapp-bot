@@ -20,21 +20,20 @@ public class LogLevel
 
 public class ConfigurationOptions
 {
-    public string[] ForbiddenGenres { get; set; } = [];
-    public string FlaresolverrUrl { get; set; } = string.Empty;
-    public string SiteUrl { get; set; } = string.Empty;
-    public string NameSelector { get; set; } = string.Empty;
-    public string GenresSelector { get; set; } = string.Empty;
-    public string EvolutionApiUrl { get; set; } = string.Empty;
-    public string EvolutionApiSendMessageEndpoint { get; set; } = string.Empty;
-    public string EvolutionApiSendMessageId { get; set; } = string.Empty;
-    public string EvolutionApiInstance { get; set; } = string.Empty;
-    public string EvolutionApiKey { get; set; } = string.Empty;
-    public bool GenerateRandomContentEnabled { get; set; }
-    public bool TranscribeAudioEnabled { get; set; }
-    public string EvolutionApiTranscriberUrl { get; set; } = string.Empty;
-    public string EvolutionApiTranscriberEndpoint { get; set; } = string.Empty;
-    public string EvolutionApiTranscriberKey { get; set; } = string.Empty;
-    public string[] AllowedJids { get; set; } = [];
+    public string[] ForbiddenGenres { get; init; } = [];
+    public string FlaresolverrUrl { get; init; } = string.Empty;
+    public string SiteUrl { get; init; } = string.Empty;
+    public string NameSelector { get; init; } = string.Empty;
+    public string GenresSelector { get; init; } = string.Empty;
+    public string EvolutionApiUrl { get; init; } = string.Empty;
+    public string EvolutionApiSendMessageEndpoint { get; init; } = string.Empty;
+    public string EvolutionApiInstance { get; init; } = string.Empty;
+    public string EvolutionApiKey { get; init; } = string.Empty;
+    public bool GenerateRandomContentEnabled { get; init; }
+    public bool TranscribeAudioEnabled { get; init; }
+    public string EvolutionApiTranscriberUrl { get; init; } = string.Empty;
+    public string EvolutionApiTranscriberEndpoint { get; init; } = string.Empty;
+    public string EvolutionApiTranscriberKey { get; init; } = string.Empty;
+    public string[] AllowedJids { get; init; } = [];
 }
 

@@ -50,13 +50,13 @@ public class EvolutionApiController : ControllerBase
 
                 if (command is not null)
                 {
-                    _commandService.TriggerCommandFunction(command);
+                    _commandService.TriggerCommandFunction(command, json!.data.key.remoteJid);
                 }
             }
             
             if (_configuration.CurrentValue.TranscribeAudioEnabled && json is { eventName: EvolutionPayload.MessagesUpsert, data.messageType: EvolutionPayload.AudioMessage })
             {
-                _messageQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64));
+                _messageQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64, json!.data.key.remoteJid, BackgroundWorkItem.BackgroundMessageType.AudioTranscription));
             }
         }
         catch (Exception e)
