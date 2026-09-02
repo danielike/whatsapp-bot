@@ -1,3 +1,5 @@
+using System.Text.Json;
+
 namespace WhatsappBot.ExternalApis.Evolution;
 
 using Common;
@@ -49,13 +51,14 @@ public class EvolutionApiService : IEvolutionApiService
         using var formData = new MultipartFormDataContent();
         
         formData.Add(new StringContent($"data:audio/ogg;base64,{base64Audio}"), "url");
-        formData.Add(new StringContent("whisper-large-v3-turbo"), "model");
+        formData.Add(new StringContent(""), "model");
         
         var response = await _evolutionApiTranscriberClient.PostAsync(_options.CurrentValue.EvolutionApiTranscriberEndpoint, formData);
         
         if (!response.IsSuccessStatusCode)
         {
-            _logger.ErrorTranscribingAudio(response.StatusCode);
+            var responseBody = await response.Content.ReadAsStringAsync();
+            _logger.ErrorTranscribingAudio(JsonSerializer.Deserialize<EvolutionApiTranscriberError>(responseBody)!.Detail);
             return new EvolutionApiTranscriberResponse();
         }
         

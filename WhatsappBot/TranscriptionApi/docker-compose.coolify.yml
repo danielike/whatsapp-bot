@@ -1,0 +1,11 @@
+services:
+  transcription-api:
+    build: .
+    container_name: transcription-api
+    environment:
+      - SERVICE_FQDN_TRANSCRIPTION_API_8083
+      - API_URL=$SERVICE_FQDN_TRANSCRIPTION_API
+      - WHISPER_CPU_THREADS=${WHISPER_CPU_THREADS:-2}
+    ports:
+      - "${API_PORT:-8083}:${API_PORT:-8083}"
+    restart: unless-stopped

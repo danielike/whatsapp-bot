@@ -23,7 +23,7 @@ services:
       - ConfigurationOptions__EvolutionApiSendMessageEndpoint=${EVOLUTION_SEND_ENDPOINT}
       - ConfigurationOptions__EvolutionApiTranscriberUrl=${TRANSCRIBER_URL}
       - ConfigurationOptions__EvolutionApiTranscriberEndpoint=${TRANSCRIBER_ENDPOINT}
-      - ConfigurationOptions__EvolutionApiTranscriberKey=${TRANSCRIBER_KEY}
+      - ConfigurationOptions__EvolutionApiTranscriberModel=${TRANSCRIBER_MODEL}
       - ConfigurationOptions__GenerateRandomContentEnabled=${GENERATE_RANDOM_CONTENT}
       - ConfigurationOptions__TranscribeAudioEnabled=${TRANSCRIBE_AUDIO}
       - ConfigurationOptions__AllowedJids__0=${ALLOWED_JID_0}

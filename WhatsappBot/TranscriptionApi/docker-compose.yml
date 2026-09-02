@@ -1,0 +1,9 @@
+services:
+  transcription-api:
+    build: .
+    container_name: transcription-api
+    env_file:
+      - .env
+    ports:
+      - "${API_PORT:-8083}:${API_PORT:-8083}"
+    restart: unless-stopped

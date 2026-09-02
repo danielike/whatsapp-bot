@@ -77,7 +77,7 @@ public class EvolutionApiServiceTest
             {
                 EvolutionApiTranscriberUrl = "http://localhost:4040",
                 EvolutionApiTranscriberEndpoint = "/transcribe",
-                EvolutionApiTranscriberKey = "429683C4C977415CAAFCCE10F7D57E11"
+                EvolutionApiTranscriberModel = "429683C4C977415CAAFCCE10F7D57E11"
             });
 
         var expectedResponse = new EvolutionApiTranscriberResponse { Transcription = "tanto." };
@@ -103,7 +103,7 @@ public class EvolutionApiServiceTest
                 var httpClient = new HttpClient(_mockHandler.Object);
                 httpClient.BaseAddress = new Uri(_optionsMonitorMock.Object.CurrentValue.EvolutionApiTranscriberUrl);
                 httpClient.DefaultRequestHeaders.Add("Accept", MediaTypeNames.Application.Json);
-                httpClient.DefaultRequestHeaders.Add("apikey", $"{_optionsMonitorMock.Object.CurrentValue.EvolutionApiTranscriberKey}");
+                httpClient.DefaultRequestHeaders.Add("apikey", $"{_optionsMonitorMock.Object.CurrentValue.EvolutionApiTranscriberModel}");
                 return httpClient;
             });
         

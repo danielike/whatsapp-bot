@@ -49,7 +49,6 @@ builder.Services.AddHttpClient(
     client =>
     {
         client.BaseAddress = new Uri($"{configurationOptions!.EvolutionApiTranscriberUrl}");
-        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", configurationOptions.EvolutionApiTranscriberKey);
     });
 
 builder.Services.AddScoped<IEvolutionDelayCalculator, EvolutionDelayCalculator>();

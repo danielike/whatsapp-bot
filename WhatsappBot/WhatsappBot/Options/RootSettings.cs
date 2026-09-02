@@ -33,7 +33,7 @@ public class ConfigurationOptions
     public bool TranscribeAudioEnabled { get; init; }
     public string EvolutionApiTranscriberUrl { get; init; } = string.Empty;
     public string EvolutionApiTranscriberEndpoint { get; init; } = string.Empty;
-    public string EvolutionApiTranscriberKey { get; init; } = string.Empty;
+    public string EvolutionApiTranscriberModel { get; init; } = string.Empty;
     public string[] AllowedJids { get; init; } = [];
 }
 
