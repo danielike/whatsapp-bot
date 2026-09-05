@@ -56,7 +56,7 @@ public class EvolutionApiController : ControllerBase
             
             if (_configuration.CurrentValue.TranscribeAudioEnabled && json is { eventName: EvolutionPayload.MessagesUpsert, data.messageType: EvolutionPayload.AudioMessage })
             {
-                _messageQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64, json!.data.key.remoteJid, BackgroundWorkItem.BackgroundMessageType.AudioTranscription));
+                _messageQueue.Enqueue(new BackgroundWorkItem(0, json.data.key.participant, json.data.message.base64, json!.data.key.remoteJid, 0, BackgroundWorkItem.BackgroundMessageType.AudioTranscription));
             }
         }
         catch (Exception e)

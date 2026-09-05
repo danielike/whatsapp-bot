@@ -11,7 +11,7 @@ using WhatsappBot.ExternalApis.Evolution.Responses;
 using WhatsappBot.Options;
 using Moq;
 
-public class EvolutionApiServiceTest
+public sealed class EvolutionApiServiceTest
 {
     private readonly Mock<IHttpClientFactory> _httpClientFactoryMock = new();
     private readonly Mock<IOptionsMonitor<ConfigurationOptions>>  _optionsMonitorMock = new();

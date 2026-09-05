@@ -2,7 +2,7 @@ namespace WhatsappBotTests;
 
 using WhatsappBot.ExternalApis.Evolution;
 
-public class EvolutionDelayCalculatorTest
+public sealed class EvolutionDelayCalculatorTest
 {
     [Fact]
     public void ShouldReturnDelay()

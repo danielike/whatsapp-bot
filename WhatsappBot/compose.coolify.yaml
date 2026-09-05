@@ -26,6 +26,8 @@ services:
       - ConfigurationOptions__EvolutionApiTranscriberModel=${TRANSCRIBER_MODEL}
       - ConfigurationOptions__GenerateRandomContentEnabled=${GENERATE_RANDOM_CONTENT}
       - ConfigurationOptions__TranscribeAudioEnabled=${TRANSCRIBE_AUDIO}
+      - ConfigurationOptions__BuzzCommandEnabled=${BUZZ_COMMAND}
+      - ConfigurationOptions__BuzzMessage=${BUZZ_MESSAGE}
       - ConfigurationOptions__AllowedJids__0=${ALLOWED_JID_0}
       - ConfigurationOptions__AllowedJids__1=${ALLOWED_JID_1}
       - ConfigurationOptions__AllowedJids__2=${ALLOWED_JID_2}

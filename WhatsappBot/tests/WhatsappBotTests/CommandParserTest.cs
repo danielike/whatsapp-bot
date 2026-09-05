@@ -2,7 +2,7 @@
 
 using WhatsappBot.Command;
 
-public class CommandParserTest
+public sealed class CommandParserTest
 {
     private const string Command = "/test"; 
     private const string NoCommand = "test";

@@ -57,6 +57,7 @@ builder.Services.AddScoped<ICommandService, CommandService>();
 builder.Services.AddSingleton<IFlaresolverrApi, FlaresolverrApi>();
 builder.Services.AddSingleton<IDomManipulator, DomManipulator>();
 builder.Services.AddSingleton<IRandomContentGenerator, RandomContentGenerator>();
+builder.Services.AddSingleton<IBuzzService, BuzzService>();
 builder.Services.AddSingleton<IMessageQueue, MessageQueue>();
 builder.Services.AddHostedService<MessageWorker>();
 

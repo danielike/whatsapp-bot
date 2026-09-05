@@ -31,6 +31,8 @@ public class ConfigurationOptions
     public string EvolutionApiKey { get; init; } = string.Empty;
     public bool GenerateRandomContentEnabled { get; init; }
     public bool TranscribeAudioEnabled { get; init; }
+    public bool BuzzCommandEnabled { get; init; }
+    public string BuzzMessage { get; init; } = string.Empty;
     public string EvolutionApiTranscriberUrl { get; init; } = string.Empty;
     public string EvolutionApiTranscriberEndpoint { get; init; } = string.Empty;
     public string EvolutionApiTranscriberModel { get; init; } = string.Empty;
