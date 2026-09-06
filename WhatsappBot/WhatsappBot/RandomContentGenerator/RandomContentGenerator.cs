@@ -30,7 +30,7 @@ public class RandomContentGenerator : IRandomContentGenerator
     public async Task<string> Generate(int number, string mention)
     {
         var forbiddenGenres = SearchValues.Create(
-            _configuration.CurrentValue.AllowedJids
+            _configuration.CurrentValue.ForbiddenGenres
                 .Select(s => s.Trim())
                 .Where(s => !string.IsNullOrWhiteSpace(s)).ToArray(),
             StringComparison.OrdinalIgnoreCase

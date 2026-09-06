@@ -1,6 +1,6 @@
-using System.Net;
-
 namespace WhatsappBot;
+
+using System.Net;
 
 public static partial class WhatsappBotLogging
 {
